@@ -54,7 +54,7 @@ Repensar **sem amarras** como a diretoria consome a informação do POI: antes d
 - **"Edição semanal" offline-first:** um pacote da semana é publicado e sincronizado nos tablets antes da terça e funciona sem rede. As anotações sincronizam quando houver conexão.
 - **Narrativa em vez de grade:** cada bloco abre com 2 ou 3 destaques, como "faturamento 25% abaixo do previsto; filial X puxou a queda". A tabela completa fica a um toque.
 - **Escala e leitura:** fonte grande por padrão, foco numa filial por vez, modo "régua" que destaca a linha em leitura.
-- **Layout gerado a partir de metadados:** filial, regional e abertura são dados, não desenho. Novas dimensões aparecem sem manutenção de report.
+- **Layout gerado a partir de metadados:** filial, regional e abertura são dados, não desenho. Novas dimensões aparecem sem manutenção de report. A análise do GER5003 mostra que quase tudo cabe num modelo único: métrica × cenário × período × dimensão. Ver [anatomia do relatório](relatorios/ger5003-poi.md).
 - **Meu jogo:** um jogo base vem pronto da Controladoria, e o diretor reordena, fixa ou oculta blocos e anexa material próprio.
 - **Camada de anotações** ligada à semana, ao bloco e à célula, com histórico ("o que anotei sobre a filial 10?").
 - **Assistente de perguntas (IA)** com consulta ao vivo quando houver rede, ou fila de perguntas para responder depois.

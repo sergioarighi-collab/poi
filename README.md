@@ -7,5 +7,7 @@ Iniciativa para repensar a reunião semanal do **POI (Planejamento Operacional I
 ## Documentação
 
 - [Descoberta: requisitos, perguntas em aberto e hipóteses](docs/descoberta.md)
+- Relatórios atuais
+  - [POI GER5003: anatomia das páginas 2 a 6](docs/relatorios/ger5003-poi.md)
 - Reuniões
   - [30/10/2026: Kickoff](docs/reunioes/2026-10-30-kickoff.md)
