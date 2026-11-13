@@ -7,6 +7,7 @@ Iniciativa para repensar a reunião semanal do **POI (Planejamento Operacional I
 ## Documentação
 
 - [Descoberta: requisitos, perguntas em aberto e hipóteses](docs/descoberta.md)
+- [Conceito: Mesa do POI](docs/conceito-mesa-do-poi.md) · [protótipo](https://claude.ai/artifact/7EF9MUmoHhztHvHTLC6m3A)
 - Relatórios atuais
   - [POI GER5003: anatomia das páginas 2 a 6](docs/relatorios/ger5003-poi.md)
 - Reuniões

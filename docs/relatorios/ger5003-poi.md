@@ -63,16 +63,18 @@ Se o layout for gerado a partir desse modelo, uma filial ou abertura nova vira *
 - Comparar com 2025 por semana mistura calendários diferentes (dias úteis diferentes). Faz mais sentido comparar por dia útil ou pelo acumulado.
 - O mesmo número aparece repetido em páginas diferentes: o total de pedidos por filial e por marca é idêntico.
 
-**A história que a grade não conta.** Exemplo com os dados de outubro até o dia 25:
+**O "Realizado" do total do mês não é só realizado.** Nas páginas de pedidos e de produção, a coluna "Realizado" do **Total do mês** soma o realizado das semanas que já passaram **com o previsto da semana que ainda não aconteceu** (26–31). Em pedidos: R$ 362,8 mi realizados + R$ 105,0 mi previstos = os R$ 467,8 mi impressos. Na prática é uma projeção com rótulo de realizado.
 
-| Indicador | Realizado | Previsto | vs 2025 |
+**A história que a grade não conta.** Exemplo com os dados de outubro até o dia 25, só com o que já aconteceu:
+
+| Indicador | Realizado até 25/10 | % do previsto | vs mesmo período de 2025 |
 |---|---|---|---|
-| Entrada de pedidos (valor) | R$ 467,8 mi | 74% do previsto | **−22%** |
-| Entrada de pedidos (pares) | 9,38 mi | 73% do previsto | **−24%** |
-| Produção (pares) | 11,26 mi | 100% do previsto | −2% |
-| Carteira atual (pares) | 15,45 mi | — | **−15%** |
+| Entrada de pedidos (valor) | R$ 362,8 mi | **69%** | **−22%** |
+| Entrada de pedidos (pares) | 7,22 mi | 67% | **−23%** |
+| Produção (pares) | 8,60 mi | 99% | +1% |
+| Carteira atual (pares) | 15,45 mi | — | **−15%** (contra out/2025) |
 
-Leitura possível: a fábrica está entregando o plano, mas a entrada de pedidos caiu cerca de 20% contra o ano passado, e a carteira está encolhendo. Hoje essa conclusão exige cruzar três páginas com a régua. Numa versão digital, ela seria a **primeira frase** da tela.
+Leitura possível: a fábrica está entregando o plano, mas a entrada de pedidos caiu cerca de 22% contra o ano passado, e a carteira está encolhendo. Hoje essa conclusão exige cruzar três páginas com a régua. Numa versão digital, ela seria a **primeira frase** da tela.
 
 ## Perguntas novas
 
@@ -81,3 +83,4 @@ Leitura possível: a fábrica está entregando o plano, mas a entrada de pedidos
 3. O valor de entrada de pedidos é bruto ou líquido? Em qual tabela de preço?
 4. Faz sentido comparar com o ano anterior por dia útil em vez de por semana do calendário?
 5. Linhas zeradas (FL17, Allegro) devem ser escondidas automaticamente?
+6. A diretoria sabe que o "Realizado" do total do mês inclui o previsto da semana que falta? É isso que querem ver (projeção) ou preferem o realizado puro?
