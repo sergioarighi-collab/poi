@@ -44,6 +44,24 @@ O protótipo agora reproduz o fluxo descrito em [arquitetura.md](arquitetura.md)
 
 Código do protótipo: [`prototipos/mesa-poi.html`](../prototipos/mesa-poi.html), um fragmento de página publicado como artifact.
 
+## Reunião ao vivo e novos insights (versão 3)
+
+**Reunião ao vivo:** um botão coloca todos na mesma mesa.
+
+- Barra "Na mesa" mostra quem está na reunião.
+- Marcações, frases editadas, comentários, insights e saídas da reunião aparecem para todos na hora, com o nome de quem fez.
+- **Mostrar a todos:** quem está falando leva a mesa para um cartão. Quem marcou "Seguir quem está mostrando" vai junto; quem quiser continua lendo no próprio ritmo.
+- Fora do modo ao vivo, tudo continua individual, só no aparelho.
+
+**Insights:**
+
+- **A IA procura novos insights:** a IA consulta pedidos, produção e carteira e procura cruzamentos que a tabela esconde. Exemplos com os dados reais:
+  - o previsto desta semana é 30% menor que o da anterior, então os 87% "parecem melhores do que são";
+  - Teutônia produz no plano, mas os pedidos e a carteira despencaram.
+- **Meu insight:** cada diretor publica a própria leitura como um cartão. Os outros podem marcar e comentar.
+
+**Para testar com outra pessoa:** compartilhe o artifact pelo menu Share. A pessoa precisa de permissão para usar (Contributor ou acima) para escrever na mesa.
+
 ## Limites do protótipo
 
 - Anotações e decisões ficam só no navegador de quem usa. Na versão real, elas são compartilhadas entre os diretores, com o que é privado separado do que é da mesa.
