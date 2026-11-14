@@ -32,6 +32,18 @@ Digitalizar as tabelas só muda o problema de lugar: a diretoria continuaria len
 - Painel de saídas: decisões, pendências e perguntas, com responsável e check.
 - Respostas locais para as perguntas sugeridas, que funcionam sem IA.
 
+## Simulação da arquitetura (versão 2)
+
+O protótipo agora reproduz o fluxo descrito em [arquitetura.md](arquitetura.md):
+
+- **Entrar como:** escolha o diretor. As permissões mudam conforme quem está logado: o fluxo de caixa detalhado aparece só para o Sr. Roberto, e os demais veem o resumo.
+- **Backend simulado:** a IA não recebe os dados de uma vez. Ela chama consultas (`consultar_pedidos`, `consultar_producao`, `consultar_carteira`, `buscar_pedido_cliente`, `consultar_fluxo_caixa`), como faria no servidor real.
+- **"Como chegou nessa resposta":** cada resposta mostra as consultas feitas e se alguma foi negada.
+- **Online / Sem internet:** sem conexão, as frases da semana e as perguntas sugeridas continuam funcionando, e as outras perguntas entram numa fila respondida quando a conexão volta.
+- Pedidos de clientes e fluxo de caixa usam **dados fictícios**, porque não estão no GER5003.
+
+Código do protótipo: [`prototipos/mesa-poi.html`](../prototipos/mesa-poi.html), um fragmento de página publicado como artifact.
+
 ## Limites do protótipo
 
 - Anotações e decisões ficam só no navegador de quem usa. Na versão real, elas são compartilhadas entre os diretores, com o que é privado separado do que é da mesa.

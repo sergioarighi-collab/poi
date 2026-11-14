@@ -1,0 +1,623 @@
+<title>Mesa do POI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one meeting table. Left = the week told in sentences (editable cards), right = what the meeting produces. Ask bar docked at the bottom. */
+:root{
+  --bg:#EEF1EF; --surface:#FFFFFF; --ink:#18201D; --muted:#5D6A65; --line:#D9DFDC;
+  --accent:#1D5C50; --accent-soft:#DCEBE6;
+  --ok:#2E7D4F; --warn:#A86A12; --bad:#B23A1E;
+  --ok-soft:#E1F1E6; --warn-soft:#F7ECD8; --bad-soft:#F7E2DC;
+  --mark:#F6DA4A; --mark-soft:rgba(246,218,74,.30);
+  --ly:#5F9CC0;
+  --f-display:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --scale:1;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111715; --surface:#19211F; --ink:#E5ECE9; --muted:#95A49E; --line:#2B3633;
+  --accent:#6CC6AF; --accent-soft:#1E3530;
+  --ok:#5CC487; --warn:#E0A54A; --bad:#EE7A5C;
+  --ok-soft:#1C3326; --warn-soft:#38291A; --bad-soft:#3A221C;
+  --mark:#E8C93A; --mark-soft:rgba(232,201,58,.20); --ly:#78B3D6; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111715; --surface:#19211F; --ink:#E5ECE9; --muted:#95A49E; --line:#2B3633;
+  --accent:#6CC6AF; --accent-soft:#1E3530;
+  --ok:#5CC487; --warn:#E0A54A; --bad:#EE7A5C;
+  --ok-soft:#1C3326; --warn-soft:#38291A; --bad-soft:#3A221C;
+  --mark:#E8C93A; --mark-soft:rgba(232,201,58,.20); --ly:#78B3D6; color-scheme:dark}
+
+html{font-size:calc(16px * var(--scale))}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:1rem;line-height:1.45}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));max-width:1280px;margin:0 auto}
+
+/* header */
+header.top{padding-block:20px 8px}
+.top .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.05;margin:4px 0 0;letter-spacing:-.01em}
+.status{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.82rem;color:var(--muted)}
+.pill .dot{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+.usersel{border:0;background:none;font-weight:600;color:var(--ink);font-size:.82rem;padding:0}
+.pill .dot.off{background:var(--warn)}
+.trace{grid-column:1/-1;font-size:.85rem;color:var(--muted);background:var(--bg);border-radius:10px;padding:8px 12px}
+.trace summary{cursor:pointer;font-weight:600;color:var(--ink)}
+.trace ol{margin:8px 0 2px;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.trace code{font-size:.8rem;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:1px 6px;word-break:break-word}
+.trace .deny{color:var(--bad);font-weight:600}
+.trace .flow{font-size:.78rem;margin:2px 0 0}
+.queue{background:var(--warn-soft);color:var(--warn);border-radius:14px;padding:12px 16px;font-size:.92rem}
+.queue ul{margin:6px 0 0;padding-left:18px;color:var(--ink)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:none;padding:6px 12px;font-size:.82rem;color:var(--muted);min-height:34px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+
+/* layout */
+main{padding-block:12px 160px}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+
+.lead{font-size:1.05rem;color:var(--muted);max-width:62ch;margin:0 0 16px}
+.lead b{color:var(--ink);font-weight:600}
+
+/* cards */
+.cards{display:flex;flex-direction:column;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,300px);gap:8px 28px;position:relative}
+@media (max-width:640px){.card{grid-template-columns:minmax(0,1fr)}}
+.card.marked{box-shadow:inset 6px 0 0 var(--mark);background:linear-gradient(90deg,var(--mark-soft),transparent 60%),var(--surface)}
+.card.ai{border-style:dashed;border-color:var(--accent)}
+.card.solo{grid-template-columns:minmax(0,1fr)}
+.card .kicker{display:flex;gap:8px;align-items:center;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.tone{width:10px;height:10px;border-radius:50%}
+.tone.ok{background:var(--ok)}.tone.warn{background:var(--warn)}.tone.bad{background:var(--bad)}.tone.info{background:var(--accent)}
+.sentence{font-family:var(--f-display);font-weight:600;font-size:clamp(1.25rem,2.1vw,1.6rem);line-height:1.25;margin:6px 0 4px;text-wrap:balance;border-radius:6px;padding:2px 4px;margin-left:-4px}
+.sentence[contenteditable="true"]:hover{background:var(--bg)}
+.sentence[contenteditable="true"]:focus{background:var(--bg);outline:2px solid var(--accent)}
+.edited{font-size:.75rem;color:var(--muted)}
+.big{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-top:4px}
+.big .n{font-family:var(--f-display);font-weight:800;font-size:clamp(2.2rem,4.4vw,3.2rem);line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.big .u{color:var(--muted);font-size:.95rem}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{font-size:.8rem;font-weight:600;padding:3px 9px;border-radius:999px;font-variant-numeric:tabular-nums}
+.chip.ok{background:var(--ok-soft);color:var(--ok)}.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.bad{background:var(--bad-soft);color:var(--bad)}.chip.info{background:var(--accent-soft);color:var(--accent)}
+.actions{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px;margin-top:6px}
+.act{border:1px solid var(--line);background:none;border-radius:999px;padding:6px 12px;font-size:.85rem;min-height:36px;display:inline-flex;gap:6px;align-items:center}
+.act:hover{border-color:var(--ink)}
+.act[aria-pressed="true"]{background:var(--mark);border-color:var(--mark);color:#2A2300}
+.notes{grid-column:1/-1;display:flex;flex-direction:column;gap:6px}
+.note{display:flex;gap:10px;align-items:flex-start;font-size:.92rem;background:var(--bg);border-radius:10px;padding:8px 10px}
+.note .who{font-weight:600;white-space:nowrap}
+.note .x{margin-left:auto;border:0;background:none;color:var(--muted);padding:0 4px}
+.note-input{display:flex;gap:6px}
+.note-input input{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+
+/* evidence bars */
+.ev{display:flex;flex-direction:column;gap:6px;align-self:center;min-width:0}
+.ev .cap{font-size:.75rem;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.bar-row{display:grid;grid-template-columns:96px minmax(0,1fr) 54px;gap:8px;align-items:center;font-size:.8rem}
+.bar-row .l{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-row .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.track{position:relative;height:12px;background:var(--bg);border-radius:4px}
+.fill{position:absolute;top:0;bottom:0;border-radius:4px}
+.fill.ok{background:var(--ok)}.fill.warn{background:var(--warn)}.fill.bad{background:var(--bad)}.fill.info{background:var(--accent)}
+.ref{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);opacity:.55}
+.axis{position:absolute;top:-2px;bottom:-2px;left:50%;width:1px;background:var(--muted);opacity:.5}
+.legend{display:flex;gap:12px;font-size:.72rem;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:2px;background:var(--ink);opacity:.55;vertical-align:middle;margin-right:4px}
+
+/* answers */
+.answers{display:flex;flex-direction:column;gap:14px;margin-bottom:22px}
+.answers:empty{display:none}
+.q{font-size:.9rem;color:var(--muted);display:flex;gap:8px;align-items:center}
+.q b{color:var(--ink);font-weight:600}
+.thinking{font-size:.95rem;color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:14px;padding:16px 20px}
+
+/* side rail */
+aside{position:sticky;top:12px;display:flex;flex-direction:column;gap:14px}
+@media (max-width:900px){aside{position:static}}
+.rail{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.rail h2{font-family:var(--f-display);font-size:1.1rem;margin:0 0 2px}
+.rail .sub{font-size:.82rem;color:var(--muted);margin:0 0 12px}
+.group{margin-top:12px}
+.group h3{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;display:flex;justify-content:space-between}
+.item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:start;padding:8px 0;border-top:1px solid var(--line);font-size:.92rem}
+.item:first-of-type{border-top:0}
+.item input[type=checkbox]{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent)}
+.item.done .t{text-decoration:line-through;color:var(--muted)}
+.item .t{outline:none;border-radius:4px}
+.item .t:focus{background:var(--bg)}
+.item select{border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:.75rem;padding:2px 6px;max-width:96px}
+.item .from{display:block;font-size:.72rem;color:var(--muted);margin-top:2px}
+.add{display:flex;gap:6px;margin-top:8px}
+.add input{flex:1;min-width:0;border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:var(--surface);font-size:.88rem}
+.add button,.btn{border:1px solid var(--ink);background:var(--ink);color:var(--surface);border-radius:10px;padding:7px 12px;font-size:.88rem}
+.empty{font-size:.85rem;color:var(--muted);padding:4px 0}
+
+/* ask dock */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;padding-bottom:calc(14px + env(safe-area-inset-bottom,0px));padding-top:10px;background:linear-gradient(to top,var(--bg) 70%,transparent)}
+.dock .wrap{display:flex;flex-direction:column;gap:8px}
+.sugs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.sugs button{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.84rem;color:var(--ink)}
+.askbox{display:flex;gap:8px;align-items:center;background:var(--surface);border:1.5px solid var(--ink);border-radius:16px;padding:6px 6px 6px 16px;box-shadow:0 6px 24px rgba(0,0,0,.08)}
+.askbox input{flex:1;min-width:0;border:0;background:none;font-size:1.05rem;padding:10px 0;outline:none}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;flex:none}
+.icon-btn.go{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.icon-btn[aria-pressed="true"]{background:var(--bad);border-color:var(--bad);color:#fff}
+.icon-btn svg{width:20px;height:20px}
+.hint{font-size:.75rem;color:var(--muted)}
+footer{font-size:.78rem;color:var(--muted);padding-block:24px 0}
+@media (prefers-reduced-motion:no-preference){.card.new{animation:pop .35s ease-out}@keyframes pop{from{transform:translateY(8px);opacity:.4}to{transform:none;opacity:1}}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">POI · Planejamento Operacional Integrado</div>
+      <h1>Semana de 19 a 25 de outubro</h1>
+    </div>
+    <div class="status">
+      <label class="pill" for="user">Entrar como <select id="user" class="usersel"></select></label>
+      <div class="seg" role="group" aria-label="Conexão"><button type="button" id="net-on">Online</button><button type="button" id="net-off">Sem internet</button></div>
+      <span class="pill"><span class="dot" id="netdot"></span><span id="nettxt">Edição de 26/10 no tablet</span></span>
+      <div class="seg" role="group" aria-label="Tamanho do texto">
+        <button type="button" data-scale="1" id="sc1">A</button>
+        <button type="button" data-scale="1.15" id="sc2">A+</button>
+        <button type="button" data-scale="1.3" id="sc3">A++</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+    <section aria-label="A semana">
+      <p class="lead">A semana já vem lida. Cada frase foi escrita a partir do relatório: <b>toque para corrigir</b>, marque o que importa e anote. Para o resto, <b>pergunte</b>.</p>
+      <div class="answers" id="answers" aria-live="polite"></div>
+      <div class="cards" id="cards"></div>
+      <footer>Protótipo de conceito com os dados reais do GER5003 (emitido em 26/10/2026, semanas até o dia 25). Pedidos de clientes e fluxo de caixa são <b>fictícios</b>, só para simular as consultas. Por enquanto, marcações, anotações e decisões ficam salvas só neste navegador.</footer>
+    </section>
+    <aside>
+      <div class="rail">
+        <h2>Saídas da reunião</h2>
+        <p class="sub">O que a mesa decidiu e quem leva adiante. O que ficar aberto aparece na semana que vem.</p>
+        <div id="outs"></div>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<div class="dock">
+  <div class="wrap">
+    <div class="sugs" id="sugs"></div>
+    <form class="askbox" id="askform" autocomplete="off">
+      <input id="ask" type="text" placeholder="Pergunte ou peça: “por que Novo Hamburgo caiu?”, “anota que…”" aria-label="Pergunte à IA">
+      <button type="button" class="icon-btn" id="mic" aria-pressed="false" aria-label="Falar" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      </button>
+      <button type="submit" class="icon-btn go" aria-label="Perguntar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </form>
+    <div class="hint" id="hint">Toque numa sugestão ou escreva a pergunta.</div>
+  </div>
+</div>
+
+<script>
+/* ---------- Dados do GER5003 (10/2026) ---------- */
+const FIL=[["FL01","Igrejinha"],["FL03","Osório"],["FL06","Mato Leitão"],["FL08","Teutônia"],["FL10","Candelária 10"],["FL11","Candelária 11"],["FL12","Roca Sales"],["FL16","Novo Hamburgo"],["FL18","Santa Clara"],["FL23","Sapiranga 23"],["FL30","Sapiranga 30"]];
+const SEM=["01–04","05–11","12–18","19–25"];
+// [previsto[], realizado[], 2025[]] por semana, na ordem de FIL (FL17 sem movimento, omitida)
+const PED=[ // entrada de pedidos, valor R$
+ [[9753117,7601135,6861389,8366654,7128443,4685026,8432413,4869976,12504510,14984240,8581943],[5255115,3098417,4182533,4104369,1820083,1686928,4136188,1448273,7098570,6942745,2605111],[5576337,2932324,3505968,4804192,3900587,1910138,5005574,1857998,7230119,7920202,3045986]],
+ [[16132966,12573299,11349660,13839570,11791403,7749664,13948344,8055594,20684139,24785946,14195687],[14418142,9178963,10495162,10899510,7367538,6195474,11491149,4677058,15483853,22247179,9527178],[15679086,9393113,9314580,13713338,11458405,6171998,13843745,5547682,17366306,22510337,10325196]],
+ [[17002857,13251253,11961635,14585802,12427197,8167525,14700441,8489953,21799431,26122407,14961120],[11248100,7057059,8190016,11588379,6119152,3646825,8726070,3422319,11171118,17321531,10408037],[10016554,8551818,7872404,11407326,14904761,5233629,9254826,4854477,17032316,23713669,7555287]],
+ [[11918095,9288421,8384467,10223868,8710801,5724999,10304224,5951004,15280237,18310412,10486946],[8661133,7186524,6976215,10446368,7024056,6003124,7052720,5687293,11669344,19756619,9056605],[14770023,9923725,6993188,21756876,9167835,5494027,8336430,22737007,14413122,26307462,21322959]]];
+const PROD=[ // produção, pares
+ [[98480,82600,69880,111602,82000,61000,71680,85256,107760,184202,99200],[96819,80406,67627,111314,75000,60449,69945,92649,109817,181294,101533],[135084,123028,90025,179629,126007,78934,102132,107372,152476,280971,141579]],
+ [[239000,207600,175100,334803,205000,158500,185100,190018,278250,460500,245000],[227411,199726,180792,314033,200017,146191,178576,196169,277821,468588,245294],[216567,196791,146798,282690,209931,129358,170358,178921,257644,464869,239064]],
+ [[193225,199800,146910,223216,173507,126811,155012,152035,278250,404124,220708],[181822,195418,152934,270149,160008,124552,150496,159213,270616,407361,221732],[175843,146007,130351,227772,170025,106121,137989,141351,206477,369589,188174]],
+ [[254455,193000,178800,281400,205000,158500,186500,191010,277500,466000,253550],[237380,194310,195471,278525,200002,152261,180139,190563,273966,477706,246859],[220821,178508,151036,283160,210025,130213,173002,182846,259064,475912,235056]]];
+const CART={ // carteira de pedidos: posição atual × mesmo momento de 2025
+ qAtual:[1594323,1137199,1061500,1553151,1166311,952896,1230886,965414,1417177,3073274,1293961],
+ vAtual:[96292152,62139539,60713835,66887165,60232080,40385494,79592960,34501787,90145505,138630826,66924883],
+ qAnt:[1668877,1154303,1084693,2065041,1653315,951289,1275571,1422796,1843115,3460305,1603879],
+ vAnt:[103972656,57776533,60170346,88684472,92489387,39785426,79053129,53848601,116761691,155978345,75564072]};
+const DIAS_UTEIS={2026:[2,5,4,5,5],2025:[3,5,5,5,5]};
+
+/* ---------- dados FICTÍCIOS (só para simular consultas que o relatório não tem) ---------- */
+const PEDIDOS_CLIENTES=[
+ {cliente:"Rede Calce Bem",pedido:"PV-48877",filial:"Teutônia FL08",pares:42000,valor:3110000,status:"Liberado, aguardando produção",faturado_pct:0,previsao:"Produção prevista na semana 26–31"},
+ {cliente:"Loja Passo Firme",pedido:"PV-48213",filial:"Novo Hamburgo FL16",pares:18400,valor:1520000,status:"Faturado parcialmente",faturado_pct:62,previsao:"Restante em 04/11"},
+ {cliente:"Magazine Sul",pedido:"PV-47950",filial:"Sapiranga FL23",pares:9600,valor:812000,status:"Faturado",faturado_pct:100,previsao:"Entregue à transportadora em 22/10"},
+ {cliente:"Distribuidora Norte",pedido:"PV-49102",filial:"Candelária FL10",pares:27500,valor:2240000,status:"Bloqueado no crédito",faturado_pct:0,previsao:"Aguardando liberação do financeiro"}];
+const CAIXA={semana:"19–25/10",resumo:{saldo_inicial:182.4,entradas:241.7,saidas:228.9,saldo_final:195.2},
+ detalhe:{"Recebimento de clientes":228.3,"Outras entradas":13.4,"Fornecedores de matéria-prima":-121.6,"Folha de pagamento":-54.2,"Impostos":-31.8,"Investimentos":-9.7,"Despesas financeiras":-11.6}};
+const PODE_CAIXA_DETALHADO=["Sr. Roberto"];
+
+/* ---------- "backend" simulado: as mesmas consultas que o servidor real vai expor ---------- */
+const norm=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().trim();
+function achaFilial(q){
+  const n=norm(q); if(!n)return -1;
+  const num=n.match(/\d{2}/)?.[0];
+  if(num){const i=FIL.findIndex(f=>f[0].endsWith(num));if(i>=0)return i}
+  return FIL.findIndex(f=>norm(f[1]).includes(n)||n.includes(norm(f[1])));
+}
+function achaSemana(q){const i=SEM.findIndex(s=>norm(q).replace(/\s|a/g,"-").includes(s.replace("–","-")));return i>=0?i:3}
+function linhasFluxo(B,args,unid){
+  const fi=achaFilial(args.filial);
+  if(args.filial&&fi<0)throw new Error("Filial não encontrada: "+args.filial+". Filiais: "+FIL.map(f=>f[1]+" "+f[0]).join(", "));
+  const linha=(i,w)=>({filial:FIL[i][1]+" "+FIL[i][0],semana:SEM[w],previsto:B[w][0][i],realizado:B[w][1][i],ano_2025:B[w][2][i],pct_previsto:pct(B[w][1][i],B[w][0][i]),var_2025_pct:dlt(B[w][1][i],B[w][2][i])});
+  if(fi>=0)return{unidade:unid,linhas:SEM.map((s,w)=>linha(fi,w)),resumo:`${FIL[fi][1]}: 4 semanas`};
+  const w=achaSemana(args.semana||"");
+  return{unidade:unid,semana:SEM[w],linhas:FIL.map((f,i)=>linha(i,w)),total:{previsto:tot(B,w,0),realizado:tot(B,w,1),ano_2025:tot(B,w,2)},resumo:`${FIL.length} filiais, semana ${SEM[w]}`};
+}
+const BACKEND={
+  consultar_pedidos:a=>linhasFluxo(PED,a,"R$"),
+  consultar_producao:a=>linhasFluxo(PROD,a,"pares"),
+  consultar_carteira:a=>{const fi=achaFilial(a.filial);const idx=fi>=0?[fi]:FIL.map((f,i)=>i);
+    return{posicao:"26/10/2026, comparada com out/2025",linhas:idx.map(i=>({filial:FIL[i][1]+" "+FIL[i][0],pares_atual:CART.qAtual[i],pares_2025:CART.qAnt[i],valor_atual:CART.vAtual[i],valor_2025:CART.vAnt[i]})),resumo:fi>=0?FIL[fi][1]:"todas as filiais"}},
+  buscar_pedido_cliente:a=>{const n=norm(a.cliente||a.pedido);const r=PEDIDOS_CLIENTES.filter(p=>norm(p.cliente).includes(n)||n.includes(norm(p.cliente))||norm(p.pedido)===n);
+    return r.length?{encontrados:r,resumo:`${r.length} pedido(s) encontrado(s)`}:{encontrados:[],clientes_disponiveis:PEDIDOS_CLIENTES.map(p=>p.cliente),resumo:"nenhum pedido encontrado"}},
+  consultar_fluxo_caixa:()=>{const det=PODE_CAIXA_DETALHADO.includes(S.user);
+    return det?{semana:CAIXA.semana,unidade:"R$ mi",nivel:"detalhado",resumo_caixa:CAIXA.resumo,linhas:CAIXA.detalhe,resumo:"nível detalhado liberado"}
+      :{semana:CAIXA.semana,unidade:"R$ mi",nivel:"resumo",resumo_caixa:CAIXA.resumo,negado:"O detalhamento por linha é restrito ao Sr. Roberto.",resumo:"só o resumo: detalhe negado para "+S.user}}
+};
+const TOOLDEFS=[
+ ["consultar_pedidos","Entrada de pedidos (R$) com previsto, realizado e 2025. Com filial: as 4 semanas dela. Sem filial: todas as filiais numa semana (padrão 19–25).",{filial:{type:"string",description:"nome ou código, ex.: Novo Hamburgo ou FL16"},semana:{type:"string",enum:SEM}}],
+ ["consultar_producao","Produção em pares com previsto, realizado e 2025. Mesmo formato de consultar_pedidos.",{filial:{type:"string"},semana:{type:"string",enum:SEM}}],
+ ["consultar_carteira","Carteira de pedidos (saldo) por filial: pares e valor hoje e um ano atrás.",{filial:{type:"string"}}],
+ ["buscar_pedido_cliente","Situação de um pedido de cliente: status, % faturado e previsão.",{cliente:{type:"string",description:"nome do cliente ou número do pedido"}}],
+ ["consultar_fluxo_caixa","Fluxo de caixa da semana. O nível de detalhe depende de quem está logado.",{}]];
+
+/* ---------- utilidades ---------- */
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const nf=(v,d=0)=>v.toLocaleString("pt-BR",{minimumFractionDigits:d,maximumFractionDigits:d});
+const mi=v=>nf(v/1e6,1);
+const pct=(a,b)=>b?Math.round(a/b*100):0;
+const dlt=(a,b)=>b?Math.round((a/b-1)*100):0;
+const sg=d=>(d>0?"+":d<0?"−":"")+Math.abs(d)+"%";
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const toneP=p=>p>=98?"ok":p>=85?"warn":"bad";
+const toneD=d=>d>=0?"ok":d>=-10?"warn":"bad";
+const W=3; // semana em pauta: 19–25
+const tot=(B,w,k)=>sum(B[w][k]);
+const mtd=(B,k)=>sum([0,1,2,3].map(w=>tot(B,w,k)));
+
+/* ---------- frases da semana (geradas na publicação da edição) ---------- */
+function baseCards(){
+  const pR=tot(PED,W,1),pP=tot(PED,W,0),pA=tot(PED,W,2);
+  const rR=tot(PROD,W,1),rP=tot(PROD,W,0),rA=tot(PROD,W,2);
+  const cQ=sum(CART.qAtual),cQa=sum(CART.qAnt),cV=sum(CART.vAtual),cVa=sum(CART.vAnt);
+  const quedas=FIL.map((f,i)=>({l:f[1],d:dlt(PED[W][1][i],PED[W][2][i])})).sort((a,b)=>a.d-b.d);
+  const fl10=[2,3].map(w=>pct(PED[w][1][4],PED[w][0][4]));
+  const mR=mtd(PED,1),mP=mtd(PED,0),mA=mtd(PED,2),mpR=mtd(PROD,1),mpP=mtd(PROD,0);
+  return [
+   {id:"pedidos",kicker:"Entrada de pedidos · lê Maribel",tone:toneP(pct(pR,pP)),
+    sentence:`Entraram R$ ${mi(pR)} mi em pedidos: ${pct(pR,pP)}% do previsto, mas ${Math.abs(dlt(pR,pA))}% abaixo da mesma semana de 2025.`,
+    big:"R$ "+mi(pR)+" mi",bigU:"na semana",
+    chips:[[`${pct(pR,pP)}% do previsto`,toneP(pct(pR,pP))],[`${sg(dlt(pR,pA))} vs 2025`,toneD(dlt(pR,pA))]],
+    ev:{cap:["Semanas de outubro, R$ mi","traço = 2025"],rows:SEM.map((s,w)=>({l:s,v:tot(PED,w,1)/1e6,ref:tot(PED,w,2)/1e6,t:toneP(pct(tot(PED,w,1),tot(PED,w,0))),txt:mi(tot(PED,w,1))}))}},
+   {id:"queda",kicker:"Onde está a queda",tone:"bad",
+    sentence:`${quedas[0].l} (${sg(quedas[0].d)}) e ${quedas[1].l} (${sg(quedas[1].d)}) explicam a maior parte da queda de pedidos contra 2025.`,
+    big:sg(quedas[0].d),bigU:quedas[0].l+" vs 2025",
+    chips:[[`${quedas.filter(q=>q.d<-10).length} de ${FIL.length} filiais com queda acima de 10%`,"bad"]],
+    ev:{cap:["Pedidos na semana vs 2025",""],diverge:true,rows:quedas.slice(0,6).map(q=>({l:q.l,v:q.d,t:toneD(q.d),txt:sg(q.d)}))}},
+   {id:"producao",kicker:"Produção · lê João",tone:toneP(pct(rR,rP)),
+    sentence:`A fábrica rodou no plano: ${nf(rR/1e6,2)} mi pares, ${pct(rR,rP)}% do previsto e ${sg(dlt(rR,rA))} sobre 2025.`,
+    big:nf(rR/1e6,2)+" mi",bigU:"pares na semana",
+    chips:[[`${pct(rR,rP)}% do previsto`,toneP(pct(rR,rP))],[`${sg(dlt(rR,rA))} vs 2025`,toneD(dlt(rR,rA))]],
+    ev:{cap:["Semanas de outubro, mi pares","traço = 2025"],rows:SEM.map((s,w)=>({l:s+(w===0?" (2 dias)":""),v:tot(PROD,w,1)/1e6,ref:tot(PROD,w,2)/1e6,t:toneP(pct(tot(PROD,w,1),tot(PROD,w,0))),txt:nf(tot(PROD,w,1)/1e6,2)}))}},
+   {id:"carteira",kicker:"Carteira de pedidos",tone:toneD(dlt(cQ,cQa)),
+    sentence:`Produzimos no ritmo, mas vendemos menos: a carteira encolheu para ${nf(cQ/1e6,1)} mi pares, ${Math.abs(dlt(cQ,cQa))}% menor que há um ano.`,
+    big:nf(cQ/1e6,1)+" mi",bigU:"pares em carteira",
+    chips:[[`${sg(dlt(cQ,cQa))} em pares`,toneD(dlt(cQ,cQa))],[`${sg(dlt(cV,cVa))} em valor (R$ ${nf(cV/1e6,0)} mi)`,toneD(dlt(cV,cVa))]],
+    ev:{cap:["Maiores variações por filial","vs out/2025"],diverge:true,rows:FIL.map((f,i)=>({l:f[1],v:dlt(CART.qAtual[i],CART.qAnt[i])})).sort((a,b)=>a.v-b.v).slice(0,5).map(r=>({...r,t:toneD(r.v),txt:sg(r.v)}))}},
+   {id:"promessa",kicker:"Promessa da semana passada",tone:fl10[1]>fl10[0]?"ok":"warn",
+    sentence:`João disse que Candelária FL10 recuperaria com os pedidos a liberar. Ela saiu de ${fl10[0]}% para ${fl10[1]}% do previsto.`,
+    big:`${fl10[0]}% → ${fl10[1]}%`,bigU:"do previsto, FL10",
+    chips:[["Melhorou, mas ainda abaixo do previsto","warn"]],
+    ev:{cap:["Candelária FL10, % do previsto",""],rows:SEM.map((s,w)=>{const p=pct(PED[w][1][4],PED[w][0][4]);return{l:s,v:p,ref:100,t:toneP(p),txt:p+"%"}})}},
+   {id:"mes",kicker:"Mês até o dia 25",tone:toneP(pct(mR,mP)),
+    sentence:`No mês, os pedidos estão em ${pct(mR,mP)}% do previsto e ${Math.abs(dlt(mR,mA))}% abaixo de 2025. A produção está em ${pct(mpR,mpP)}%.`,
+    big:"R$ "+nf(mR/1e6,0)+" mi",bigU:"em pedidos no mês",
+    chips:[["Só o que já aconteceu: o previsto da semana 26–31 fica de fora","info"]],
+    ev:{cap:["Acumulado até 25/10, % do previsto","traço = 100%"],rows:[
+      {l:"Pedidos",v:pct(mR,mP),ref:100,t:toneP(pct(mR,mP)),txt:pct(mR,mP)+"%"},
+      {l:"Produção",v:pct(mpR,mpP),ref:100,t:toneP(pct(mpR,mpP)),txt:pct(mpR,mpP)+"%"}]}}
+  ];
+}
+
+/* ---------- estado ---------- */
+const KEY="mesa-poi-v2";
+const USUARIOS=["Rodrigo","Sr. Roberto","João","Maribel","Clóvis","Luiz","Miran"];
+const DIRETORES=["—","Rodrigo","Sr. Roberto","João","Maribel","Clóvis","Luiz","Miran","Controladoria","TI"];
+const SEED={
+  user:"Rodrigo", online:true, queue:[], scale:1, marked:{}, edits:{}, notes:{}, hidden:{}, answers:[],
+  outs:[
+    {id:"o1",k:"pergunta",t:"O pedido grande de Novo Hamburgo de 2025 se repete este ano?",who:"Maribel",done:false,from:"Aberta na semana de 12 a 18"},
+    {id:"o2",k:"pendencia",t:"Separar bolsas de produção e de revenda no produto pronto",who:"Controladoria",done:false},
+    {id:"o3",k:"decisao",t:"Manter o ritmo de produção até a carteira de novembro fechar",who:"João",done:false,from:"Exemplo"}]
+};
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))||null}catch(e){S=null}
+S=S&&S.outs?Object.assign(structuredClone(SEED),S):structuredClone(SEED);
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+/* ---------- render ---------- */
+function evHTML(ev){
+  if(!ev||!ev.rows||!ev.rows.length)return"";
+  const rows=ev.rows;
+  let html=`<div class="ev"><div class="cap"><span>${esc(ev.cap?.[0]||"")}</span><span>${esc(ev.cap?.[1]||"")}</span></div>`;
+  if(ev.diverge){
+    const m=Math.max(1,...rows.map(r=>Math.abs(+r.v||0)));
+    for(const r of rows){const v=+r.v||0,w=Math.abs(v)/m*50;
+      html+=`<div class="bar-row"><span class="l" title="${esc(r.l)}">${esc(r.l)}</span><span class="track"><span class="axis"></span><span class="fill ${esc(r.t||"info")}" style="left:${v<0?50-w:50}%;width:${w}%"></span></span><span class="v">${esc(r.txt??v)}</span></div>`}
+  }else{
+    const m=Math.max(1e-9,...rows.map(r=>Math.max(+r.v||0,+r.ref||0)));
+    for(const r of rows){const v=+r.v||0;
+      html+=`<div class="bar-row"><span class="l" title="${esc(r.l)}">${esc(r.l)}</span><span class="track"><span class="fill ${esc(r.t||"info")}" style="left:0;width:${v/m*100}%"></span>${r.ref!=null?`<span class="ref" style="left:calc(${(+r.ref)/m*100}% - 1px)"></span>`:""}</span><span class="v">${esc(r.txt??nf(v,1))}</span></div>`}
+  }
+  return html+"</div>";
+}
+function cardHTML(c,isAI,trace,who){
+  const id=c.id, marked=!!S.marked[id], edited=S.edits[id];
+  const notes=S.notes[id]||[];
+  return `<article class="card${marked?" marked":""}${isAI?" ai":""}${c.ev?"":" solo"}" data-id="${esc(id)}">
+    <div style="min-width:0">
+      <div class="kicker"><span class="tone ${esc(c.tone||"info")}"></span>${esc(c.kicker||"")}</div>
+      <p class="sentence" contenteditable="true" spellcheck="false" data-edit="${esc(id)}">${esc(edited??c.sentence)}</p>
+      ${edited!=null?`<span class="edited">Frase editada · <button class="act" style="min-height:0;padding:0 8px" data-act="reset">voltar ao original</button></span>`:""}
+      ${c.big?`<div class="big"><span class="n">${esc(c.big)}</span><span class="u">${esc(c.bigU||"")}</span></div>`:""}
+      <div class="chips">${(c.chips||[]).map(([t,k])=>`<span class="chip ${esc(k)}">${esc(t)}</span>`).join("")}</div>
+    </div>
+    ${evHTML(c.ev)}
+    ${traceHTML(trace,who)}
+    ${notes.length?`<div class="notes">${notes.map((n,i)=>`<div class="note"><span class="who">${esc(n.who)}</span><span>${esc(n.t)}</span><button class="x" data-act="delnote" data-i="${i}" aria-label="Apagar anotação">×</button></div>`).join("")}</div>`:""}
+    <div class="notes" data-noteform hidden><div class="note-input"><input type="text" id="ni-${esc(id)}" placeholder="Sua anotação nesta frase"><button class="btn" data-act="savenote">Anotar</button></div></div>
+    <div class="actions">
+      <button class="act" data-act="mark" aria-pressed="${marked}">${marked?"Marcado":"Marcar"}</button>
+      <button class="act" data-act="note">Anotar</button>
+      <button class="act" data-act="why">Por quê?</button>
+      <button class="act" data-act="topend">Virar pendência</button>
+      ${isAI?`<button class="act" data-act="drop">Tirar da mesa</button>`:`<button class="act" data-act="hide">Ocultar</button>`}
+    </div>
+  </article>`;
+}
+let BASE=baseCards();
+function renderCards(){
+  const vis=BASE.filter(c=>!S.hidden[c.id]);
+  const hid=BASE.filter(c=>S.hidden[c.id]);
+  document.getElementById("cards").innerHTML=vis.map(c=>cardHTML(c,false)).join("")+
+    (hid.length?`<p class="hint">Ocultas: ${hid.map(c=>`<button class="act" data-show="${esc(c.id)}">${esc(c.kicker.split(" · ")[0])}</button>`).join(" ")}</p>`:"");
+}
+function traceHTML(tr,who){
+  if(!tr||!tr.length)return"";
+  return `<details class="trace"><summary>Como chegou nessa resposta · ${tr.length} consulta${tr.length>1?"s":""} ao sistema</summary>
+    <p class="flow">Mesa → backend do POI (usuário: ${esc(who||S.user)}) → IA → consultas abaixo → resposta</p>
+    <ol>${tr.map(t=>`<li><code>${esc(t.name)}(${esc(JSON.stringify(t.input||{}))})</code> ${t.ok?"→ "+esc(t.resumo):`<span class="deny">→ ${esc(t.resumo)}</span>`}</li>`).join("")}</ol></details>`;
+}
+function renderAnswers(){
+  const el=document.getElementById("answers");
+  const q=S.queue.length?`<div class="queue"><b>Sem internet:</b> ${S.queue.length} pergunta${S.queue.length>1?"s":""} na fila. Respondo assim que a conexão voltar.<ul>${S.queue.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:"";
+  el.innerHTML=q+(pending?`<div class="thinking">${esc(pending)}</div>`:"")+S.answers.map(a=>`<div><div class="q">${esc(a.who||"")} perguntou: <b>${esc(a.q)}</b></div>${a.card?cardHTML(a.card,true,a.trace,a.who):""}</div>`).join("");
+}
+const KINDS=[["decisao","Decisões"],["pendencia","Pendências"],["pergunta","Perguntas abertas"]];
+function renderOuts(){
+  document.getElementById("outs").innerHTML=KINDS.map(([k,label])=>{
+    const items=S.outs.filter(o=>o.k===k);
+    return `<div class="group"><h3><span>${label}</span><span>${items.filter(o=>!o.done).length}</span></h3>
+      ${items.length?items.map(o=>`<div class="item${o.done?" done":""}" data-out="${esc(o.id)}">
+        <input type="checkbox" ${o.done?"checked":""} aria-label="Concluir">
+        <div><span class="t" contenteditable="true">${esc(o.t)}</span>${o.from?`<span class="from">${esc(o.from)}</span>`:""}</div>
+        <select aria-label="Responsável">${DIRETORES.map(d=>`<option ${d===o.who?"selected":""}>${esc(d)}</option>`).join("")}</select>
+      </div>`).join(""):`<div class="empty">Nada ainda.</div>`}
+      <form class="add" data-add="${k}"><input type="text" id="add-${k}" placeholder="Adicionar"><button>+</button></form></div>`}).join("");
+}
+function applyScale(){
+  document.documentElement.style.setProperty("--scale",S.scale);
+  document.querySelectorAll("[data-scale]").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.scale===S.scale)));
+}
+let pending="";
+function renderAll(){renderCards();renderAnswers();renderOuts();applyScale()}
+
+/* ---------- respostas locais (sem IA / sem internet) ---------- */
+function localAnswer(key){
+  if(key==="cliente"){const r=BACKEND.buscar_pedido_cliente({cliente:"Rede Calce Bem"}).encontrados[0];
+    return{trace:[{name:"buscar_pedido_cliente",input:{cliente:"Rede Calce Bem"},ok:true,resumo:"1 pedido encontrado"}],card:{kicker:"Pedido de cliente · resposta local",tone:"warn",
+    sentence:`Ainda não. O pedido ${r.pedido} da ${r.cliente} (${nf(r.pares)} pares, R$ ${nf(r.valor/1e6,1)} mi) está liberado e aguardando produção em ${r.filial}. ${r.previsao}.`,
+    big:r.faturado_pct+"%",bigU:"faturado",chips:[[r.status,"warn"],["Dado fictício","info"]],ev:null}}}
+  if(key==="caixa"){const c=BACKEND.consultar_fluxo_caixa();const det=c.nivel==="detalhado";
+    return{trace:[{name:"consultar_fluxo_caixa",input:{},ok:det,resumo:c.resumo}],card:{kicker:"Fluxo de caixa · resposta local",tone:"ok",
+    sentence:`O caixa fechou a semana em R$ ${nf(c.resumo_caixa.saldo_final,1)} mi, R$ ${nf(c.resumo_caixa.saldo_final-c.resumo_caixa.saldo_inicial,1)} mi acima do início.`+(det?" A maior saída foi matéria-prima (R$ 121,6 mi).":" O detalhamento por linha é restrito ao Sr. Roberto."),
+    big:"R$ "+nf(c.resumo_caixa.saldo_final,1)+" mi",bigU:"saldo final",chips:[[det?"Detalhado":"Resumo (sem permissão para o detalhe)",det?"ok":"warn"],["Dado fictício","info"]],
+    ev:det?{cap:["Linhas do fluxo, R$ mi",""],diverge:true,rows:Object.entries(c.linhas).map(([l,v])=>({l,v,t:v>=0?"ok":"bad",txt:nf(v,1)}))}:{cap:["Semana, R$ mi",""],rows:[{l:"Entradas",v:c.resumo_caixa.entradas,t:"ok",txt:nf(c.resumo_caixa.entradas,1)},{l:"Saídas",v:c.resumo_caixa.saidas,t:"bad",txt:nf(c.resumo_caixa.saidas,1)}]}}}}
+  const wrap=c=>c&&{trace:[{name:key==="nh"?"consultar_pedidos":"consultar_pedidos",input:key==="nh"?{filial:"Novo Hamburgo"}:{semana:"19–25"},ok:true,resumo:key==="nh"?"Novo Hamburgo: 4 semanas":"11 filiais, semana 19–25"}],card:c};
+  return wrap(localAnswerBase(key));
+}
+function localAnswerBase(key){
+  if(key==="nh"){const i=7;return{kicker:"Novo Hamburgo · resposta local",tone:"bad",
+    sentence:`Novo Hamburgo vendeu R$ ${mi(PED[W][1][i])} mi na semana contra R$ ${mi(PED[W][2][i])} mi em 2025. O previsto (R$ ${mi(PED[W][0][i])} mi) já esperava a queda: a filial fez ${pct(PED[W][1][i],PED[W][0][i])}% dele. A base de 2025 parece ter um pedido grande fora da curva.`,
+    big:sg(dlt(PED[W][1][i],PED[W][2][i])),bigU:"vs 2025",chips:[[`${pct(PED[W][1][i],PED[W][0][i])}% do previsto`,"warn"]],
+    ev:{cap:["Novo Hamburgo, R$ mi por semana","traço = 2025"],rows:SEM.map((s,w)=>({l:s,v:PED[w][1][i]/1e6,ref:PED[w][2][i]/1e6,t:toneP(pct(PED[w][1][i],PED[w][0][i])),txt:mi(PED[w][1][i])}))}}}
+  if(key==="abaixo"){const r=FIL.map((f,i)=>({l:f[1],p:pct(PED[W][1][i],PED[W][0][i])})).filter(x=>x.p<80).sort((a,b)=>a.p-b.p);
+    return{kicker:"Pedidos abaixo de 80% do previsto · resposta local",tone:"bad",
+    sentence:`${r.length} filiais ficaram abaixo de 80% do previsto na semana: ${r.map(x=>x.l).join(", ")}.`,
+    big:String(r.length),bigU:"filiais",chips:[],ev:{cap:["% do previsto na semana",""],rows:r.map(x=>({l:x.l,v:x.p,ref:100,t:toneP(x.p),txt:x.p+"%"}))}}}
+  if(key==="semana"){const a=tot(PED,2,1),b=tot(PED,3,1);return{kicker:"Comparação com a semana passada · resposta local",tone:"info",
+    sentence:`Os pedidos ficaram quase iguais à semana anterior (R$ ${mi(b)} mi contra R$ ${mi(a)} mi), mas o previsto era bem menor. Por isso o % subiu de ${pct(a,tot(PED,2,0))}% para ${pct(b,tot(PED,3,0))}%.`,
+    big:`${pct(a,tot(PED,2,0))}% → ${pct(b,tot(PED,3,0))}%`,bigU:"do previsto",chips:[],
+    ev:{cap:["Pedidos, R$ mi","traço = previsto"],rows:[{l:"12–18",v:a/1e6,ref:tot(PED,2,0)/1e6,t:"bad",txt:mi(a)},{l:"19–25",v:b/1e6,ref:tot(PED,3,0)/1e6,t:"warn",txt:mi(b)}]}}}
+  if(key==="sapiranga"){const i=9;return{kicker:"Sapiranga 23 · resposta local",tone:"ok",
+    sentence:`Sapiranga 23 é a maior filial e superou o previsto: R$ ${mi(PED[W][1][i])} mi, ${pct(PED[W][1][i],PED[W][0][i])}% do esperado. Ainda assim está ${Math.abs(dlt(PED[W][1][i],PED[W][2][i]))}% abaixo de 2025.`,
+    big:pct(PED[W][1][i],PED[W][0][i])+"%",bigU:"do previsto",chips:[],ev:null}}
+  return null;
+}
+const SUGS=[["O pedido da Rede Calce Bem já faturou?","cliente"],["Como está o caixa da semana?","caixa"],["Por que Novo Hamburgo caiu tanto?","nh"],["Quais filiais ficaram abaixo de 80%?","abaixo"],["Melhorou em relação à semana passada?","semana"],["Anota que a Maribel vai checar a carteira de novembro",null]];
+
+/* ---------- IA ---------- */
+let sample=null, toolsOK=false, ctl=null;
+const FORMATO=`Responda com um único objeto JSON:
+{"card": {"kicker": "rótulo curto", "tone": "ok|warn|bad|info", "sentence": "1 a 2 frases com a resposta e o porquê", "big": "o número principal formatado", "bigU": "o que é o número", "chips": [["texto curto","ok|warn|bad|info"]], "ev": {"cap": ["título do gráfico","legenda"], "diverge": false, "rows": [{"l":"rótulo","v":número,"ref":número opcional,"t":"ok|warn|bad|info","txt":"valor formatado"}]}} ou null,
+ "itens": [{"k":"decisao|pendencia|pergunta","t":"texto","who":"nome ou —"}]}
+Use "diverge": true quando os valores forem variações % (positivas e negativas). No máximo 8 linhas em "rows". Se o pedido for para anotar, registrar ou combinar algo, crie o item em "itens" (e card pode ser null). Diretores: Rodrigo, Sr. Roberto, João, Maribel, Clóvis, Luiz, Miran; áreas: Controladoria, TI.`;
+const ESTILO=`Você é o assistente da reunião semanal da diretoria de uma indústria de calçados (POI). Responda em português do Brasil, direto, como um analista experiente fala com diretores: frases curtas, sem jargão, números arredondados (R$ em milhões com 1 casa, pares em mil ou milhões).`;
+function promptTools(q){
+  return `${ESTILO}
+Quem está perguntando: ${S.user}. Semana em pauta: 19–25 de outubro de 2026 (semanas do mês: ${SEM.join(", ")}; a semana 26–31 ainda não aconteceu).
+Use as ferramentas para buscar os dados; nunca invente números. Se uma ferramenta negar acesso, diga isso com naturalidade e responda com o que foi liberado. Se não existir ferramenta para a pergunta (ex.: faturamento, RH, estoque), diga que essa informação ainda não está conectada e crie uma pergunta aberta em "itens".
+
+${FORMATO}
+
+PEDIDO DO DIRETOR: ${q}`;
+}
+function dataForAI(){
+  const o={semanas:SEM,observacao:"Cada linha: [previsto, realizado, 2025].",pedidos_R$:{},producao_pares:{}};
+  FIL.forEach((f,i)=>{const n=f[1]+" "+f[0];o.pedidos_R$[n]=SEM.map((s,w)=>[PED[w][0][i],PED[w][1][i],PED[w][2][i]]);o.producao_pares[n]=SEM.map((s,w)=>[PROD[w][0][i],PROD[w][1][i],PROD[w][2][i]])});
+  return JSON.stringify(o);
+}
+function promptData(q){return `${ESTILO} Use SOMENTE os dados abaixo; se não houver dado para a pergunta, diga e crie uma pergunta aberta em "itens".\n\n${FORMATO}\n\nDADOS: ${dataForAI()}\n\nPEDIDO DO DIRETOR (${S.user}): ${q}`}
+function addOuts(items,from){
+  for(const it of items||[]){
+    const k=["decisao","pendencia","pergunta"].includes(it?.k)?it.k:"pendencia";
+    const t=String(it?.t||"").trim(); if(!t)continue;
+    S.outs.push({id:"o"+Date.now()+Math.random().toString(36).slice(2,6),k,t,who:DIRETORES.includes(it.who)?it.who:"—",done:false,from});
+  }
+}
+function clean(c){
+  if(!c||typeof c!=="object")return null;
+  const T=["ok","warn","bad","info"],t=x=>T.includes(x)?x:"info";
+  const ev=c.ev&&Array.isArray(c.ev.rows)&&c.ev.rows.length?{cap:Array.isArray(c.ev.cap)?c.ev.cap.map(String):["",""],diverge:!!c.ev.diverge,
+    rows:c.ev.rows.slice(0,8).map(r=>({l:String(r.l??""),v:Number(r.v)||0,ref:r.ref!=null&&isFinite(+r.ref)?+r.ref:null,t:t(r.t),txt:r.txt!=null?String(r.txt):undefined}))}:null;
+  return{kicker:String(c.kicker||"Resposta"),tone:t(c.tone),sentence:String(c.sentence||""),big:c.big?String(c.big):"",bigU:String(c.bigU||""),
+    chips:Array.isArray(c.chips)?c.chips.slice(0,3).map(x=>[String(x?.[0]??x),t(x?.[1])]):[],ev};
+}
+function pushAnswer(q,card,trace){card.id="a"+Date.now()+Math.random().toString(36).slice(2,5);S.answers.unshift({q,card,trace,who:S.user});save();renderAnswers()}
+function anotarLocal(q){
+  if(!/^(anot|registr|combin)/i.test(q))return false;
+  addOuts([{k:"pendencia",t:q.replace(/^(anota|anote|registra|registre|combina|combinado)\s+(que\s+)?/i,""),who:DIRETORES.find(d=>q.includes(d))||"—"}],"Anotado por "+S.user);
+  save();renderOuts();setHint("Anotado nas saídas da reunião.");return true;
+}
+const setHint=t=>{document.getElementById("hint").textContent=t};
+async function ask(q,key){
+  q=(q||"").trim(); if(!q)return;
+  const local=key?localAnswer(key):null;
+  if(!S.online){
+    if(local){pushAnswer(q,local.card,local.trace);setHint("Respondido com a edição da semana guardada no tablet.");return}
+    if(anotarLocal(q))return;
+    S.queue.push(q);save();renderAnswers();setHint("Sem internet: a pergunta ficou na fila.");return;
+  }
+  if(!sample){
+    if(local){pushAnswer(q,local.card,local.trace);return}
+    if(anotarLocal(q))return;
+    setHint("A IA não está disponível nesta visualização. As sugestões acima funcionam mesmo assim.");return;
+  }
+  ctl?.abort(); ctl=new AbortController();
+  const trace=[];
+  pending="Pensando…"; renderAnswers(); setHint("A IA está consultando o sistema.");
+  try{
+    let r;
+    if(toolsOK){
+      const tools=TOOLDEFS.map(([name,description,props])=>({name,description,inputSchema:{type:"object",properties:props},
+        execute:(input)=>{const fn=BACKEND[name];const res=fn(input||{});trace.push({name,input,ok:!res.negado,resumo:res.resumo||""});
+          pending=`Consultando o sistema: ${trace.map(t=>t.name.replace(/_/g," ")).join(" → ")}`;renderAnswers();const {resumo,...out}=res;return out}}));
+      r=await sample.json(promptTools(q),{modelTier:"quick",tools,signal:ctl.signal});
+    }else{
+      trace.push({name:"dados_da_edicao",input:{},ok:true,resumo:"pedidos e produção enviados no prompt (sem ferramentas nesta visualização)"});
+      r=await sample.json(promptData(q),{modelTier:"quick",signal:ctl.signal});
+    }
+    pending="";
+    const card=clean(r?.card);
+    addOuts(r?.itens,`Da pergunta de ${S.user}: ${q}`);
+    if(card)pushAnswer(q,card,trace); else {save();renderAll()}
+    renderOuts();
+    setHint(card?"Resposta na mesa. Toque em “Como chegou nessa resposta” para ver as consultas.":"Registrado nas saídas da reunião.");
+  }catch(e){
+    pending=""; renderAnswers();
+    if(e?.code==="cancelled")return;
+    if(local){pushAnswer(q,local.card,local.trace);return}
+    setHint(({not_granted:"A IA não foi liberada nesta página.",rate_limited:"Muitas perguntas seguidas. Tente de novo em instantes.",invalid_json:"A resposta veio confusa. Tente perguntar de outro jeito."})[e?.code]||"Não consegui responder agora. Tente de novo.");
+    if(e?.code==="not_granted"||e?.code==="sampling_disabled")sample=null;
+  }
+}
+async function runQueue(){
+  const q=[...S.queue]; S.queue=[]; save(); renderAnswers();
+  for(const x of q)await ask(x);
+}
+function renderNet(){
+  document.getElementById("net-on").setAttribute("aria-pressed",String(S.online));
+  document.getElementById("net-off").setAttribute("aria-pressed",String(!S.online));
+  document.getElementById("netdot").classList.toggle("off",!S.online);
+  document.getElementById("nettxt").textContent=S.online?"Online · IA conectada":"Sem internet · edição de 26/10 no tablet";
+}
+
+/* ---------- eventos ---------- */
+document.getElementById("sugs").innerHTML=SUGS.map(([t,k],i)=>`<button type="button" data-sug="${i}">${esc(t)}</button>`).join("");
+document.getElementById("sugs").addEventListener("click",e=>{const b=e.target.closest("[data-sug]");if(!b)return;const [t,k]=SUGS[+b.dataset.sug];ask(t,k)});
+document.getElementById("askform").addEventListener("submit",e=>{e.preventDefault();const i=document.getElementById("ask");const q=i.value;i.value="";ask(q)});
+document.querySelectorAll("[data-scale]").forEach(b=>b.addEventListener("click",()=>{S.scale=+b.dataset.scale;save();applyScale()}));
+
+function findCard(id){return BASE.find(c=>c.id===id)||S.answers.find(a=>a.card?.id===id)?.card}
+document.addEventListener("click",e=>{
+  const show=e.target.closest("[data-show]"); if(show){delete S.hidden[show.dataset.show];save();renderCards();return}
+  const b=e.target.closest("[data-act]"); if(!b)return;
+  const art=b.closest(".card"); const id=art?.dataset.id; const c=id&&findCard(id); const act=b.dataset.act;
+  if(act==="mark"){S.marked[id]=!S.marked[id];save();renderAll()}
+  else if(act==="note"){const f=art.querySelector("[data-noteform]");f.hidden=!f.hidden;if(!f.hidden)f.querySelector("input").focus()}
+  else if(act==="savenote"){const inp=art.querySelector("[data-noteform] input");const t=inp.value.trim();if(!t)return;(S.notes[id]??=[]).push({who:S.user,t});save();renderAll()}
+  else if(act==="delnote"){S.notes[id].splice(+b.dataset.i,1);save();renderAll()}
+  else if(act==="why"){ask(`Explique o porquê desta leitura e o que está por trás dela: "${S.edits[id]??c.sentence}"`)}
+  else if(act==="topend"){addOuts([{k:"pendencia",t:"Ver: "+(S.edits[id]??c.sentence),who:"—"}],c.kicker);save();renderOuts();document.getElementById("hint").textContent="Virou pendência nas saídas da reunião."}
+  else if(act==="hide"){S.hidden[id]=true;save();renderCards()}
+  else if(act==="drop"){S.answers=S.answers.filter(a=>a.card?.id!==id);save();renderAnswers()}
+  else if(act==="reset"){delete S.edits[id];save();renderAll()}
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.target.matches("[data-noteform] input")){e.preventDefault();e.target.closest(".card").querySelector('[data-act="savenote"]').click()}
+  if(e.key==="Enter"&&e.target.matches(".sentence,.item .t")){e.preventDefault();e.target.blur()}
+});
+document.addEventListener("focusout",e=>{
+  const s=e.target.closest?.(".sentence");
+  if(s){const id=s.dataset.edit,c=findCard(id),t=s.textContent.trim();
+    if(t&&t!==c.sentence&&t!==S.edits[id]){S.edits[id]=t;save();renderAll()} else if(t===c.sentence&&S.edits[id]!=null){delete S.edits[id];save();renderAll()}}
+  const it=e.target.closest?.(".item .t");
+  if(it){const o=S.outs.find(x=>x.id===it.closest(".item").dataset.out);if(o){o.t=it.textContent.trim()||o.t;save()}}
+});
+document.getElementById("outs").addEventListener("change",e=>{
+  const row=e.target.closest(".item"); if(!row)return; const o=S.outs.find(x=>x.id===row.dataset.out);
+  if(e.target.type==="checkbox"){o.done=e.target.checked;save();renderOuts()} else if(e.target.tagName==="SELECT"){o.who=e.target.value;save()}
+});
+document.getElementById("outs").addEventListener("submit",e=>{
+  e.preventDefault(); const f=e.target.closest("[data-add]"); const inp=f.querySelector("input"); const t=inp.value.trim(); if(!t)return;
+  addOuts([{k:f.dataset.add,t,who:"—"}]); save(); renderOuts(); document.getElementById("add-"+f.dataset.add)?.focus();
+});
+
+const us=document.getElementById("user");
+us.innerHTML=USUARIOS.map(u=>`<option ${u===S.user?"selected":""}>${esc(u)}</option>`).join("");
+us.addEventListener("change",()=>{S.user=us.value;save();renderAll();setHint(`Agora a mesa responde como ${S.user}. Teste: “Como está o caixa da semana?”`)});
+document.getElementById("net-on").addEventListener("click",()=>{if(S.online)return;S.online=true;save();renderNet();if(S.queue.length)runQueue()});
+document.getElementById("net-off").addEventListener("click",()=>{S.online=false;save();renderNet()});
+renderNet();
+renderAll();
+
+/* ---------- capacidades: IA e voz ---------- */
+(async()=>{
+  if(!window.claude?.use)return;
+  try{const s=await claude.use("sample"); if(s){sample=s; const l=await s.limits().catch(()=>null); toolsOK=!!l?.tools; setHint("Pergunte qualquer coisa. A IA consulta o sistema com as permissões de quem está logado.")}}catch(e){}
+  try{
+    const d=await claude.use("dictation"); if(!d)return;
+    const mic=document.getElementById("mic"), inp=document.getElementById("ask"); mic.hidden=false;
+    d.onFinal(({text})=>{inp.value=(inp.value+text).replace(/^\s+/,"")});
+    d.onPartial(({text})=>{inp.placeholder=text||"Ouvindo…"});
+    d.onState(({state})=>{const on=state!=="idle";mic.setAttribute("aria-pressed",String(on));
+      if(!on){inp.placeholder="Pergunte ou peça: “por que Novo Hamburgo caiu?”, “anota que…”";if(inp.value.trim())document.getElementById("askform").requestSubmit()}});
+    mic.addEventListener("click",()=>{if(d.active()){d.stop()}else{d.start({language:"pt-BR"}).catch(err=>{if(err?.code==="not_granted"||err?.code==="unavailable")mic.hidden=true})}});
+  }catch(e){}
+})();
+</script>
