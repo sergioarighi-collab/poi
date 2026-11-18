@@ -86,6 +86,7 @@ A Minha mesa de cada diretor tem:
 - **Fixados por você:** qualquer cartão da semana ou insight que ele queira acompanhar.
 - **Minha pauta para terça:** os pontos que ele quer levar. A IA sugere itens a partir dos números da parte dele, e "Levar à mesa" transforma um item em pergunta aberta para todos.
 - **Minhas pendências:** os itens das saídas da reunião em nome dele.
+- **Compartilhar com a mesa:** a pauta é privada por padrão. Se o diretor quiser, ele a compartilha, e ela aparece para todos em "Pautas da reunião", no topo da aba Saídas. Na reunião ao vivo, a pauta sincroniza na hora e pode voltar a ser privada a qualquer momento.
 
 No protótipo, troque o papel no menu do topo para ver a página de cada um.
 

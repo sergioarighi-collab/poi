@@ -197,6 +197,22 @@ main{padding-bottom:170px}
 .levado{font-size:.74rem;color:var(--ok)}
 .excl{font-size:.7rem;background:var(--yellow);color:var(--on-yellow);border-radius:999px;padding:2px 9px;font-weight:500;white-space:nowrap}
 
+.sharebtn{border:0;background:var(--track);border-radius:999px;padding:6px 12px;font-size:.8rem;display:inline-flex;gap:6px;align-items:center}
+.sharebtn[aria-pressed="true"]{background:var(--dark);color:var(--on-dark)}
+.colhead{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;margin:0 0 6px}
+.colhead h3{margin:0}
+.colbtns{display:flex;gap:6px;flex-wrap:wrap}
+.sharednote{font-size:.76rem;color:var(--ok);margin:0 0 8px}
+.pauta-card{background:var(--surface);border-radius:26px;box-shadow:var(--shadow);padding:18px 20px}
+.pauta-card h3{font-weight:500;font-size:1rem;margin:0 0 2px}
+.pauta-card .sub{color:var(--muted);font-size:.78rem;margin:0 0 8px}
+.pauta-card ul{list-style:none;margin:0;padding:0}
+.pauta-card li{padding:8px 0;border-top:1px solid var(--line);font-size:.9rem;display:flex;gap:8px}
+.pauta-card li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--yellow);margin-top:7px;flex:none}
+.pauta-card li.done{color:var(--muted);text-decoration:line-through}
+.pauta-card li.done::before{background:var(--line)}
+#outs-head.gap{margin-top:30px}
+
 /* drawer */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:50}
 .drawer{position:fixed;top:0;right:0;bottom:0;z-index:51;width:min(480px,100%);background:var(--solid);box-shadow:-12px 0 40px rgba(0,0,0,.16);border-radius:28px 0 0 28px;padding:calc(20px + env(safe-area-inset-top,0px)) 22px calc(22px + env(safe-area-inset-bottom,0px));overflow-y:auto;display:flex;flex-direction:column;gap:14px}
@@ -312,7 +328,11 @@ main{padding-bottom:170px}
   </section>
 
   <section data-pane="saidas" hidden>
-    <div class="sechead"><h2>Saídas da reunião</h2><p id="outs-sub"></p></div>
+    <div id="pautas-wrap" hidden>
+      <div class="sechead"><h2>Pautas da reunião</h2><p>O que cada diretor escolheu compartilhar antes de terça.</p></div>
+      <div class="bento" id="pautas"></div>
+    </div>
+    <div class="sechead" id="outs-head"><h2>Saídas da reunião</h2><p id="outs-sub"></p></div>
     <div class="cols" id="outs"></div>
   </section>
 </main>
@@ -553,7 +573,7 @@ const setHint=t=>{document.getElementById("hint").textContent=t};
 
 /* ---------- estado compartilhado (reunião ao vivo) ---------- */
 const P="mesa/s2026-10-19";
-const LIVE={on:false,ready:false,db:null,room:null,user:null,me:null,cards:{},notes:[],extras:[],outs:[],foco:null,peers:[],names:{},avatars:{},unsubs:[],readonly:false,dirty:false};
+const LIVE={pautas:[],on:false,ready:false,db:null,room:null,user:null,me:null,cards:{},notes:[],extras:[],outs:[],foco:null,peers:[],names:{},avatars:{},unsubs:[],readonly:false,dirty:false};
 const live=()=>LIVE.on;
 const getEdit=id=>live()?(LIVE.cards[id]?.edit??null):(S.edits[id]??null);
 const getEditBy=id=>live()?LIVE.cards[id]?.editBy:null;
@@ -579,7 +599,16 @@ const PAPEIS={
 const DEVOL={sem:["Sem. ant.","01–04","05–11","12–18","19–25"],saldoQ:[241840,301200,328934,294932,345500],saldoV:[10937301,14139040,16543853,14479493,16909254],entQ:[33914,63624,138261,102691,123272],saiQ:[51088,4264,110527,136693,72704]};
 const MP={consumo:[14532527,43195888,38212108,45557054],consumo25:[21653660,40327006,33673988,41932822],disp:253059005,disp25:239990392};
 const CART_MES=[["Set/26",481928,25192428],["Out/26",5169955,261208571],["Nov/26",8526161,450552795],["Dez/26",1083872,50705505],["Jan/27",184176,8776926]];
-const meu=()=>{S.meu??={};return S.meu[S.user]??={pins:[],pauta:[]}};
+const meu=()=>{S.meu??={};return S.meu[S.user]??={pins:[],pauta:[],shared:false}};
+const sharedPautas=()=>live()?LIVE.pautas.filter(p=>Array.isArray(p.itens)&&p.itens.length)
+  :Object.entries(S.meu||{}).filter(([,m])=>m.shared&&m.pauta?.length).map(([papel,m])=>({papel,by:papel,itens:m.pauta.map(i=>({t:i.t,done:!!i.done}))}));
+let pautaChain=Promise.resolve();
+function syncPauta(){
+  if(!live()||!LIVE.db)return;
+  const m=meu(),ref=LIVE.db.doc(`${P}/pautas/${LIVE.me}`);
+  const body={by:LIVE.me,papel:S.user,itens:m.pauta.map(i=>({t:i.t,done:!!i.done})),at:Date.now()};
+  pautaChain=pautaChain.then(()=>guard(()=>m.shared&&m.pauta.length?ref.set(body):ref.delete()));
+}
 const excl=[["Só para você","info"]];
 function personalCards(){
   const x=PAPEIS[S.user]?.extra;const out=[];
@@ -767,6 +796,12 @@ function renderOuts(){
       </div>`).join(""):`<div class="empty">Nada ainda.</div>`}
       <form class="add" data-add="${k}"><input type="text" id="add-${k}" placeholder="Adicionar"><button aria-label="Adicionar">+</button></form></div>`}).join("");
   document.getElementById("outs-sub").textContent=live()?"Compartilhado com todos na reunião. O que ficar aberto volta na semana que vem.":"O que a mesa decidiu e quem leva adiante. O que ficar aberto volta na semana que vem.";
+  const ps=sharedPautas();
+  document.getElementById("pautas-wrap").hidden=!ps.length;
+  document.getElementById("outs-head").classList.toggle("gap",!!ps.length);
+  document.getElementById("pautas").innerHTML=ps.map(p=>{const nome=live()?(p.by===LIVE.me?"Você":(LIVE.names[p.by]||p.papel||"Alguém")):p.papel;
+    return `<div class="pauta-card"><h3>Pauta de ${esc(nome)}</h3><p class="sub">${esc(live()&&p.papel?p.papel+" · ":"")}${p.itens.filter(i=>!i.done).length} ponto${p.itens.filter(i=>!i.done).length===1?"":"s"} em aberto</p>
+      <ul>${p.itens.map(i=>`<li class="${i.done?"done":""}">${esc(i.t)}</li>`).join("")}</ul></div>`}).join("");
   const open=list.filter(o=>!o.done).length,n=document.getElementById("n-saidas");n.hidden=!open;n.textContent=open;
 }
 function renderMine(){
@@ -781,8 +816,10 @@ function renderMine(){
   document.getElementById("mine-stats").innerHTML=st(parte.length,"cartões na sua parte")+st(minhas.filter(o=>!o.done).length,"pendências suas abertas")+st(m.pauta.filter(p=>!p.done).length,"itens na sua pauta");
   document.getElementById("mine-cards").innerHTML=parte.length?parte.map(c=>tileHTML(c)).join(""):`<div class="emptybox">Você não apresenta blocos nesta semana. Fixe os cartões que quiser acompanhar.</div>`;
   document.getElementById("mine-pins").innerHTML=pins.length?pins.map(({c,x})=>tileHTML(c,x)).join(""):`<div class="emptybox">Nada fixado ainda. Na aba Semana ou Insights, abra um cartão e toque em “Fixar na minha mesa”.</div>`;
-  document.getElementById("mine-pauta").innerHTML=`<h3><span>Minha pauta para terça</span><button type="button" class="prep" id="prep">${IC.spark}A IA sugere</button></h3>
-    <p class="sub">O que você quer levar. “Levar à mesa” transforma o item em pergunta aberta para todos.</p>
+  document.getElementById("mine-pauta").innerHTML=`<div class="colhead"><h3>Minha pauta para terça</h3><div class="colbtns">
+      <button type="button" class="sharebtn" id="sharepauta" aria-pressed="${!!m.shared}">${m.shared?"Compartilhada com a mesa":"Compartilhar com a mesa"}</button>
+      <button type="button" class="prep" id="prep">${IC.spark}A IA sugere</button></div></div>
+    ${m.shared?`<p class="sharednote">Todos veem esta pauta na aba Saídas da reunião${live()?", ao vivo":""}.</p>`:`<p class="sub">Só você vê. Compartilhe se quiser que a mesa veja antes de terça. “Levar à mesa” transforma um item em pergunta aberta.</p>`}
     ${m.pauta.length?m.pauta.map(p=>`<div class="item${p.done?" done":""}" data-pauta="${esc(p.id)}"><input type="checkbox" ${p.done?"checked":""} aria-label="Concluir"><span class="t">${esc(p.t)}</span>
       <div class="meta">${p.levado?`<span class="levado">Levado à mesa</span>`:`<button type="button" class="levar" data-levar="${esc(p.id)}">Levar à mesa</button>`}<button type="button" class="levar" data-delpauta="${esc(p.id)}" aria-label="Apagar item">Apagar</button></div></div>`).join(""):`<div class="empty">Nada ainda. Escreva abaixo ou peça sugestões à IA.</div>`}
     <form class="add" id="pauta-add"><input type="text" id="pauta-in" placeholder="O que você quer levar para a reunião"><button aria-label="Adicionar">+</button></form>`;
@@ -837,7 +874,7 @@ function sched(){
     if(LIVE.user){
       const ids=new Set();
       Object.values(LIVE.cards).forEach(c=>{if(c.editBy)ids.add(c.editBy);Object.keys(c.marks||{}).forEach(k=>ids.add(k))});
-      LIVE.notes.forEach(n=>ids.add(n.by));LIVE.extras.forEach(x=>ids.add(x.by));LIVE.outs.forEach(o=>o.by&&ids.add(o.by));
+      LIVE.notes.forEach(n=>ids.add(n.by));LIVE.pautas.forEach(p=>p.by&&ids.add(p.by));LIVE.extras.forEach(x=>ids.add(x.by));LIVE.outs.forEach(o=>o.by&&ids.add(o.by));
       if(LIVE.foco?.by)ids.add(LIVE.foco.by);LIVE.peers.forEach(p=>p.by&&ids.add(p.by));
       ids.delete(undefined);ids.delete(null);
       if(ids.size){const ps=await LIVE.user.profiles([...ids]);for(const id of ids){LIVE.names[id]=ps[id]?.name||"";LIVE.avatars[id]=ps[id]?.avatarUrl||""}}
@@ -863,11 +900,13 @@ async function enterLive(){
     LIVE.db.collection(`${P}/notas`).onSnapshot(s=>{LIVE.notes=s.docs.map(d=>({...d.data(),id:d.id}));sched()},onErr),
     LIVE.db.collection(`${P}/extras`).onSnapshot(s=>{LIVE.extras=s.docs.map(d=>{const x=d.data();return{...x,id:d.id,card:x.card?{...x.card,id:d.id}:null}}).sort((a,b)=>(b.at||0)-(a.at||0));sched()},onErr),
     LIVE.db.collection(`${P}/saidas`).onSnapshot(s=>{LIVE.outs=s.docs.map(d=>({...d.data(),id:d.id})).sort((a,b)=>(a.at||0)-(b.at||0));sched()},onErr),
+    LIVE.db.collection(`${P}/pautas`).onSnapshot(s=>{LIVE.pautas=s.docs.map(d=>({...d.data(),id:d.id}));sched()},onErr),
     LIVE.db.doc(`${P}/estado/foco`).onSnapshot(d=>{
       const f=d.exists?d.data():null;const changed=f&&f.at!==LIVE.foco?.at;LIVE.foco=f;sched();
       if(changed&&f.by!==LIVE.me&&S.follow&&Date.now()-(f.at||0)<3*3600e3)followTo(f.card);
     },onErr));
   LIVE.room?.presence({papel:S.user}).catch(()=>{});
+  if(meu().shared)syncPauta();
 }
 function leaveLive(){
   LIVE.unsubs.forEach(u=>u());LIVE.unsubs=[];LIVE.on=false;S.liveOn=false;save();
@@ -942,7 +981,8 @@ Responda com um único objeto JSON: {"itens": ["...", "..."]}`,{modelTier:"quick
   }catch(e){if(e?.code==="cancelled"){if(btn)btn.disabled=false;return}}
   const ja=new Set(meu().pauta.map(p=>p.t));
   const lista=(itens&&itens.length?itens:(PREP_LOCAL[S.user]||["Quais cartões da semana afetam a sua área?"])).filter(t=>!ja.has(t));
-  lista.forEach(addPauta);
+  lista.forEach(addPauta);syncPauta();
+  renderOuts();
   setHint(lista.length?`${lista.length} sugest${lista.length>1?"ões":"ão"} na sua pauta.${itens?"":" (Calculadas a partir da edição da semana.)"}`:"Sua pauta já tem essas sugestões.");
   renderMine();
 }
@@ -1023,15 +1063,17 @@ document.getElementById("net-on").addEventListener("click",()=>{if(S.online)retu
 document.getElementById("net-off").addEventListener("click",()=>{S.online=false;save();renderNet()});
 document.getElementById("scrim").addEventListener("click",closeCard);
 const minePane=document.querySelector('[data-pane="minha"]');
-minePane.addEventListener("submit",e=>{if(e.target.id!=="pauta-add")return;e.preventDefault();const i=document.getElementById("pauta-in");const t=i.value.trim();if(!t)return;addPauta(t);renderMine();document.getElementById("pauta-in").focus()});
+minePane.addEventListener("submit",e=>{if(e.target.id!=="pauta-add")return;e.preventDefault();const i=document.getElementById("pauta-in");const t=i.value.trim();if(!t)return;addPauta(t);syncPauta();renderMine();renderOuts();document.getElementById("pauta-in").focus()});
 minePane.addEventListener("click",e=>{
   if(e.target.closest("#prep")){prepPauta();return}
+  if(e.target.closest("#sharepauta")){const m=meu();m.shared=!m.shared;save();syncPauta();renderMine();renderOuts();
+    setHint(m.shared?"Sua pauta está visível para a mesa na aba Saídas da reunião.":"Sua pauta voltou a ser só sua.");return}
   const lv=e.target.closest("[data-levar]");if(lv){const p=meu().pauta.find(x=>x.id===lv.dataset.levar);if(!p)return;p.levado=true;save();
     actAddOut({k:"pergunta",t:p.t,who:S.user,done:false,from:`Pauta de ${S.user}`}).then(renderMine);setHint("Levado à mesa: virou pergunta aberta nas saídas da reunião.");return}
-  const dp=e.target.closest("[data-delpauta]");if(dp){const m=meu();m.pauta=m.pauta.filter(x=>x.id!==dp.dataset.delpauta);save();renderMine()}
+  const dp=e.target.closest("[data-delpauta]");if(dp){const m=meu();m.pauta=m.pauta.filter(x=>x.id!==dp.dataset.delpauta);save();syncPauta();renderMine();renderOuts()}
 });
 minePane.addEventListener("change",e=>{
-  const pr=e.target.closest("[data-pauta]");if(pr&&e.target.type==="checkbox"){const p=meu().pauta.find(x=>x.id===pr.dataset.pauta);if(p){p.done=e.target.checked;save();renderMine()}return}
+  const pr=e.target.closest("[data-pauta]");if(pr&&e.target.type==="checkbox"){const p=meu().pauta.find(x=>x.id===pr.dataset.pauta);if(p){p.done=e.target.checked;save();syncPauta();renderMine();renderOuts()}return}
   const mo=e.target.closest("[data-mineout]");if(mo&&e.target.type==="checkbox")actUpdOut(mo.dataset.mineout,{done:e.target.checked});
 });
 
