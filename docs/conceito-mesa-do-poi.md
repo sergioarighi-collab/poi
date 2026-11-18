@@ -62,6 +62,33 @@ Código do protótipo: [`prototipos/mesa-poi.html`](../prototipos/mesa-poi.html)
 
 **Para testar com outra pessoa:** compartilhe o artifact pelo menu Share. A pessoa precisa de permissão para usar (Contributor ou acima) para escrever na mesa.
 
+## Minha mesa: uma página por diretor (versão 5)
+
+Três camadas, cada uma com um papel:
+
+| Camada | Para quê | Quem vê |
+|---|---|---|
+| **Minha mesa** | Preparar-se antes e acompanhar depois | Só o diretor |
+| **Semana / Insights / Saídas** | A leitura comum da semana | Todos |
+| **Reunião ao vivo** | Discutir e decidir juntos, na hora | Todos, ao mesmo tempo |
+
+A Minha mesa de cada diretor tem:
+
+- **Sua parte na pauta:** os blocos que ele apresenta.
+  - Maribel: pedidos e carteira.
+  - João: produção e a promessa da semana anterior.
+- **Um cartão exclusivo:**
+  - Clóvis: devoluções em transportadora (dado real do GER5003).
+  - João: matéria-prima (dado real).
+  - Maribel: carteira por mês de entrega (dado real).
+  - Sr. Roberto: fluxo de caixa detalhado (fictício).
+  - Rodrigo: o que está aberto na mesa, por responsável.
+- **Fixados por você:** qualquer cartão da semana ou insight que ele queira acompanhar.
+- **Minha pauta para terça:** os pontos que ele quer levar. A IA sugere itens a partir dos números da parte dele, e "Levar à mesa" transforma um item em pergunta aberta para todos.
+- **Minhas pendências:** os itens das saídas da reunião em nome dele.
+
+No protótipo, troque o papel no menu do topo para ver a página de cada um.
+
 ## Limites do protótipo
 
 - Anotações e decisões ficam só no navegador de quem usa. Na versão real, elas são compartilhadas entre os diretores, com o que é privado separado do que é da mesa.
