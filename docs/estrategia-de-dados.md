@@ -66,7 +66,7 @@ Enquanto as trilhas 1 a 3 não estão prontas, a área pode **subir o Excel de s
 | **0. Inventário** | 2 a 4 semanas | Mapear com a TI onde está cada dado; diagnóstico coluna a coluna das planilhas de RH e Financeiro; dicionário de dados (ex.: o que é "realizado do mês") |
 | **1. Piloto** | 6 a 8 semanas | Views e API para os dados do tipo 1 (a maior parte do POI); upload com conferência para RH e Financeiro; board em uso numa reunião real |
 | **2. Automação na origem** | Contínua, por prioridade | Quadro de funcionários automático; contas a pagar e a receber automáticas; formulários para previsões e ajustes; aprovação do caixa |
-| **3. O board vira a fonte** | Quando as planilhas acabarem | As áreas param de mandar Excel; a Controladoria deixa de montar os jogos e passa a revisar e publicar |
+| **3. O board vira a fonte** | Quando as planilhas acabarem | As áreas param de mandar Excel; a Controladoria deixa de montar o quebra-cabeça de dados e passa a revisar e publicar |
 
 As durações são estimativas para discutir com a TI, não compromisso.
 
@@ -83,4 +83,4 @@ As durações são estimativas para discutir com a TI, não compromisso.
 2. **RH:** de qual sistema sai a planilha de funcionários? Quanto tempo leva por semana para montar?
 3. **Financeiro:** que partes do fluxo de caixa vêm de contas a pagar e a receber no ERP, e quais são projeção manual? Por que o sistema de fluxo existente não é usado?
 4. **Comercial:** de onde sai o ranking de vendas?
-5. **Controladoria:** quanto tempo leva hoje para montar os jogos toda segunda?
+5. **Controladoria:** quanto tempo leva hoje para juntar os dados e tabelas e montar o material de cada diretor toda segunda?

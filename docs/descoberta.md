@@ -4,7 +4,7 @@ Documento vivo. Consolida o que sabemos, o que precisamos decidir e as primeiras
 
 ## Problema
 
-A diretoria conduz a reunião semanal do POI em papel. Cada diretor recebe um "jogo" de relatórios em formato de planilha impressa, montado à mão pela Controladoria. A leitura é lenta e linha a linha. Perguntas feitas na hora ficam sem resposta, as anotações se perdem, e cada mudança de layout pedida de última hora força a TI a correr contra o prazo.
+A diretoria conduz a reunião semanal do POI em papel. A Controladoria junta à mão dados e tabelas de várias áreas, como um quebra-cabeça, e monta um material impresso para cada diretor, em formato de planilha. A leitura é lenta e linha a linha. Perguntas feitas na hora ficam sem resposta, as anotações se perdem, e cada mudança de layout pedida de última hora força a TI a correr contra o prazo.
 
 ## Objetivo da iniciativa
 
@@ -25,7 +25,7 @@ Repensar **sem amarras** como a diretoria consome a informação do POI: antes d
 **Desejável**
 - Gráficos que contem a história, com tabela por trás e drill-down.
 - Respostas na hora ("o pedido X faturou?") consultando a base, talvez com IA.
-- Diretor montando o próprio jogo com muito pouco esforço.
+- Diretor montando o próprio material com muito pouco esforço.
 - Áreas publicando material próprio para os diretores.
 - Espelhar a tela numa TV quando houver.
 
@@ -55,6 +55,6 @@ Repensar **sem amarras** como a diretoria consome a informação do POI: antes d
 - **Narrativa em vez de grade:** cada bloco abre com 2 ou 3 destaques, como "faturamento 25% abaixo do previsto; filial X puxou a queda". A tabela completa fica a um toque.
 - **Escala e leitura:** fonte grande por padrão, foco numa filial por vez, modo "régua" que destaca a linha em leitura.
 - **Layout gerado a partir de metadados:** filial, regional e abertura são dados, não desenho. Novas dimensões aparecem sem manutenção de report. A análise do GER5003 mostra que quase tudo cabe num modelo único: métrica × cenário × período × dimensão. Ver [anatomia do relatório](relatorios/ger5003-poi.md).
-- **Meu jogo:** um jogo base vem pronto da Controladoria, e o diretor reordena, fixa ou oculta blocos e anexa material próprio.
+- **Meu material:** uma base vem pronta da Controladoria, e o diretor reordena, fixa ou oculta blocos e anexa material próprio.
 - **Camada de anotações** ligada à semana, ao bloco e à célula, com histórico ("o que anotei sobre a filial 10?").
 - **Assistente de perguntas (IA)** com consulta ao vivo quando houver rede, ou fila de perguntas para responder depois.

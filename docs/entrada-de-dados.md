@@ -29,11 +29,11 @@ Conclusão: a maior parte dos dados já está no sistema. As planilhas manuais s
 
   Se algo não bate, o sistema mostra e a área corrige ali mesmo.
 - **Painel de entregas da semana:** quem já mandou, quem falta e o prazo (segunda até o meio-dia), com lembrete automático. Isso acaba com o "papel deixado por baixo da porta".
-- A Controladoria **aprova e publica** a edição da semana. É ela quem "fecha o jogo", como hoje.
+- A Controladoria **aprova e publica** a edição da semana. É ela quem fecha o material da semana, como hoje.
 
 ### Fase 2: módulo admin
 
-- **Cadastro do que antes era manutenção de report:** filiais, regionais, marcas, aberturas (ex.: bolsas produção × revenda), quem vê o quê e a ordem do jogo de cada diretor. Mudança de última hora vira configuração, e a TI deixa de editar o layout.
+- **Cadastro do que antes era manutenção de report:** filiais, regionais, marcas, aberturas (ex.: bolsas produção × revenda), quem vê o quê e a ordem do material de cada diretor. Mudança de última hora vira configuração, e a TI deixa de editar o layout.
 - **Formulários simples** para as áreas que preferirem digitar em vez de subir Excel.
 - **Histórico e auditoria:** quem enviou, quando, e o que mudou entre versões.
 
