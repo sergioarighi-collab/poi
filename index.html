@@ -44,7 +44,7 @@
   --bar-ok:#ECECEC; --bar-warn:#F2C93B; --bar-bad:#F08467; --bar-info:#7D828A;
   --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
 
-html{font-size:calc(15px * var(--scale));background:var(--bg2)}
+html{font-size:calc(15px * var(--scale));background:var(--bg2);overflow-y:scroll;scrollbar-gutter:stable}
 body{background:linear-gradient(135deg,var(--bg1) 0%,var(--bg2) 45%,var(--bg3) 100%) fixed,var(--bg2);color:var(--ink);font-family:var(--font);font-size:1rem;line-height:1.45;font-weight:400;min-height:100%}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -101,7 +101,7 @@ svg{width:1em;height:1em;flex:none}
 .stat .l{font-size:.78rem;color:var(--muted);margin-top:4px}
 
 /* sections */
-main{padding-bottom:170px}
+main{padding-bottom:170px;min-height:100vh}
 .sechead{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin:0 0 14px}
 .sechead h2{font-weight:500;font-size:1.15rem;margin:0}
 .sechead p{margin:0;color:var(--muted);font-size:.86rem}
@@ -193,8 +193,10 @@ main{padding-bottom:170px}
 .empty{font-size:.84rem;color:var(--muted);padding:6px 0 10px;border-top:1px solid var(--line)}
 
 /* minha mesa */
-.minehead{display:flex;flex-wrap:wrap;gap:16px 40px;align-items:flex-end;justify-content:space-between;padding-block:22px 22px}
-.hello{font-weight:400;font-size:clamp(1.7rem,3.4vw,2.4rem);line-height:1.1;margin:0;letter-spacing:-.01em}
+.minehead{display:flex;flex-wrap:wrap;gap:12px 32px;align-items:flex-end;justify-content:space-between;margin:0 0 22px}
+.hello{font-weight:500;font-size:1.15rem;line-height:1.2;margin:0}
+.minehead .stats{gap:22px}
+.minehead .stat .n{font-size:1.6rem}
 .minesub{margin:8px 0 0;color:var(--muted);font-size:.92rem}
 .sechead.gap,.cols.gap{margin-top:30px}
 .cols.two{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -302,7 +304,7 @@ main{padding-bottom:170px}
 <main class="wrap">
   <section data-pane="minha" hidden>
     <div class="minehead">
-      <div><h1 class="hello">Olá, <span id="mine-name"></span></h1><p class="minesub" id="mine-foco"></p></div>
+      <div><h2 class="hello">Sua mesa, <span id="mine-name"></span></h2><p class="minesub" id="mine-foco"></p></div>
       <div class="stats" id="mine-stats"></div>
     </div>
     <div class="sechead"><h2>Sua parte na pauta</h2><p>O que você apresenta e o que só você recebe.</p></div>
@@ -713,7 +715,8 @@ function setTab(t){
   TAB=t;
   document.querySelectorAll("[data-tab]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.tab===t)));
   document.querySelectorAll("[data-pane]").forEach(p=>{p.hidden=p.dataset.pane!==t});
-  document.getElementById("hero").hidden=t==="minha";
+  const main=document.querySelector("main"),top=main.getBoundingClientRect().top+scrollY-12;
+  if(scrollY>top)scrollTo({top,behavior:"instant"});
 }
 function traceHTML(tr,role){
   if(!tr||!tr.length)return"";
@@ -816,7 +819,7 @@ function renderOuts(){
 function renderMine(){
   const papel=PAPEIS[S.user]||{foco:"",le:[]},m=meu();
   document.getElementById("mine-name").textContent=S.user;
-  document.getElementById("mine-foco").textContent=`Sua mesa para a semana de 19 a 25 de outubro. ${papel.foco}`;
+  document.getElementById("mine-foco").textContent=papel.foco;
   const parte=[...personalCards(),...BASE.filter(c=>papel.le.includes(c.id))];
   const naParte=new Set(parte.map(c=>c.id));
   const pins=m.pins.filter(id=>!naParte.has(id)).map(id=>{const x=extras().find(e=>e.card?.id===id);return x?{c:x.card,x}:(BASE.find(b=>b.id===id)?{c:BASE.find(b=>b.id===id)}:null)}).filter(Boolean);
