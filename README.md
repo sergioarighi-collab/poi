@@ -9,6 +9,7 @@ Iniciativa para repensar a reunião semanal do **POI (Planejamento Operacional I
 - [Descoberta: requisitos, perguntas em aberto e hipóteses](docs/descoberta.md)
 - [Arquitetura: primeiras decisões](docs/arquitetura.md)
 - [Entrada de dados: planilhas, módulo admin e integrações](docs/entrada-de-dados.md)
+- [Estratégia de dados: dado na origem, sem API por área](docs/estrategia-de-dados.md)
 - [Conceito: Mesa do POI](docs/conceito-mesa-do-poi.md) · [protótipo](https://claude.ai/artifact/7EF9MUmoHhztHvHTLC6m3A)
 - Relatórios atuais
   - [POI GER5003: anatomia das páginas 2 a 6](docs/relatorios/ger5003-poi.md)
