@@ -246,6 +246,13 @@ main{padding-bottom:170px;min-height:100vh}
 .dmeta{display:flex;flex-direction:column;gap:6px;font-size:.82rem;color:var(--muted);background:var(--track);border-radius:16px;padding:10px 14px}
 .dmeta .conf{align-items:flex-start}.dmeta .conf svg{margin-top:2px}
 .note.priv{background:var(--warn-soft)}
+.dblock{display:flex;flex-direction:column;gap:6px}
+.dblock h4{margin:4px 0 0}
+.dblock dl{margin:0;display:flex;flex-direction:column}
+.drow{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid var(--line);font-size:.86rem}
+.drow dt{color:var(--muted);min-width:0}.drow dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.drow.tot dt,.drow.tot dd{color:var(--ink);font-weight:500}
+.tc-ok{color:var(--ok)}.tc-bad{color:var(--bad)}.tc-warn{color:var(--warn)}.tc-info{color:var(--muted)}
 .note .who{display:inline-flex;gap:4px;align-items:center}
 .note .nt{display:flex;flex-direction:column;gap:2px}
 .snap{font-size:.74rem;color:var(--muted)}
@@ -275,6 +282,8 @@ main{padding-bottom:170px;min-height:100vh}
 .peca .round{width:30px;height:30px;font-size:.85rem}
 .peca.off{opacity:.55}
 .ed #mesa .mesa-grid{max-width:none}
+.confbox{display:flex;flex-direction:column;gap:2px;background:var(--ok-soft);border-radius:14px;padding:10px 12px;font-size:.8rem;margin:8px 0 4px}
+.confbox.warn{background:var(--warn-soft)}.confbox b{font-weight:500}
 .resultados{display:flex;flex-direction:column;gap:6px}
 .res{border:0;text-align:left;background:var(--track);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
 .res .rot{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
@@ -460,9 +469,34 @@ const PEDIDOS_CLIENTES=[
  {cliente:"Loja Passo Firme",pedido:"PV-48213",filial:"Novo Hamburgo FL16",pares:18400,valor:1520000,status:"Faturado parcialmente",faturado_pct:62,previsao:"Restante em 04/11"},
  {cliente:"Magazine Sul",pedido:"PV-47950",filial:"Sapiranga FL23",pares:9600,valor:812000,status:"Faturado",faturado_pct:100,previsao:"Entregue à transportadora em 22/10"},
  {cliente:"Distribuidora Norte",pedido:"PV-49102",filial:"Candelária FL10",pares:27500,valor:2240000,status:"Bloqueado no crédito",faturado_pct:0,previsao:"Aguardando liberação do financeiro"}];
+// FICTÍCIO, na estrutura do Excel do Financeiro
+const CAIXA_ESTR=[
+  {g:"Ingressos",l:[["Recebimento MI",198.4],["Recebimento ME",31.9],["ACC",11.4]],tot:["Total de ingressos",241.7]},
+  {g:"Desembolsos operacionais",l:[["Matéria-prima",-96.3],["Matéria-prima importada",-25.3],["Pessoal",-54.2],["Comercial",-9.8],["Impostos",-31.8]],tot:["Saldo operacional",24.3]},
+  {g:"Não operacionais",l:[["Empréstimos",-6.0],["Investimentos",-5.5]],tot:["Saldo não operacional",-11.5]}];
+const INFORMATIVO={aplicacoes:142.6,acc:38.2,emprestimos:96.4,capitalGiro:7.9}; // FICTÍCIO, só Presidência
 const CAIXA={semana:"19–25/10",previsto:{entradas:236.0,saidas:231.5},resumo:{saldo_inicial:182.4,entradas:241.7,saidas:228.9,saldo_final:195.2},
- detalhe:{"Recebimento de clientes":228.3,"Outras entradas":13.4,"Fornecedores de matéria-prima":-121.6,"Folha de pagamento":-54.2,"Impostos":-31.8,"Investimentos":-9.7,"Despesas financeiras":-11.6}};
+ detalhe:{}};
+CAIXA_ESTR.forEach(g=>g.l.forEach(([l,v])=>CAIXA.detalhe[l]=v));
 const PODE_CAIXA_DETALHADO=["Sr. Roberto"];
+// FICTÍCIO: lucro líquido por marca (LL %), mercado interno e externo (estrutura do LL resumo)
+const LL={mi:[["Actvitta",-3.2],["Beira Rio",4.1],["Bolsas",2.6],["BR Sport",-1.4],["Meias",5.0],["Modare",3.3],["Moleca",1.9],["Molekinha",-0.8],["Molekinho",2.2],["Vizzano",6.1]],
+  me:[["Actvitta",4.4],["Beira Rio",3.9],["Modare",5.6],["Moleca",2.8],["Molekinha",6.2],["Molekinho",1.1],["Vizzano",4.7]],totMI:2.4,totME:4.3,acumMI:1.8,anoAntMI:-0.6};
+// FICTÍCIO: comparativo do mês atual por dia útil (estrutura da página 7)
+const DIAUTIL={du:16,atual:{pp:410000,entrada:248.6e6,fat:236.1e6},anterior:{pp:352000,entrada:271.9e6,fat:229.4e6},pmVar:{entrada:2,fat:6}};
+// FICTÍCIO: faturamento líquido da semana (quadro da página 1)
+const FATLIQ={bruto:54.1e6,devol:2.3e6,refat:0.7e6};
+// FICTÍCIO: devolução de transportadora por motivo (estrutura do GER5011)
+const DEVOL_MOTIVOS=[["Mercadoria apreendida pela fiscalização","MI",88400],["Comercial solicitou lançamento do DIS","ME",24900],["Desacordo com pedido","MI",13300],["Não tem pedido","MI",9800],
+  ["Recusa clientes especiais","MI",9300],["Aguardando agendamento","MI",4000],["Retido na transportadora","MI",2100],["Mercadoria fora do prazo","MI",2050]];
+// FICTÍCIO: conferência Mapa Diário × POI (estrutura do GER4002)
+const CONFERENCIA=[["Indicadores industriais",[["Produção real (pares)",0],["Compras (valor)",0],["Mão de obra atelier",0],["Consumo de MP",0]]],
+  ["Estoque",[["Total estoque MP",0.02],["Total estoque PP",0],["Beneficiamento",0.01],["Consignação",0]]],
+  ["Entrada de pedidos",[["Pares",0],["Valor",0]]],["Faturamento",[["Pares",0],["Valor",0],["Previsto",0],["Mês",0]]],
+  ["Devoluções",[["Pares",0],["Valor",0],["Transportadora",0]]],["Carteira",[["Atual",0],["Próximos meses",0]]]];
+const RANKING_CHECK={linhas:86,semFoto:1,semMargem:0};
+const PESSOAS_ADM=[["Administrativo e Financeiro",412,38],["Regionais comerciais",286,31],["Presidência e diretoria",22,4],["Centro de distribuição",538,57]]; // FICTÍCIO
+const MANUAL_ORDER=["faturamento","pedidos","queda","carteira","producao","pessoas","ll","ranking","caixa","acomp"];
 // FICTÍCIO: faturamento por mercado (MI = mercado interno, ME = mercado externo), R$ por semana
 const FAT={mi:{prev:[24.0e6,46.2e6,44.1e6,50.3e6],real:[21.4e6,44.8e6,39.1e6,47.2e6],a25:[26.1e6,47.0e6,41.3e6,55.2e6]},
            me:{prev:[2.5e6,4.2e6,4.4e6,4.8e6],real:[2.1e6,4.6e6,3.9e6,5.3e6],a25:[2.8e6,4.9e6,4.1e6,5.6e6]}};
@@ -470,9 +504,9 @@ const FAT={mi:{prev:[24.0e6,46.2e6,44.1e6,50.3e6],real:[21.4e6,44.8e6,39.1e6,47.
 const PESSOAS={dir:[612,488,455,640,520,402,498,431,690,1210,560],ind:[74,58,52,80,61,47,59,50,83,141,66],
   afast:[18,11,9,22,14,8,12,10,19,37,15],varSem:[4,-2,0,-11,3,0,-1,-6,2,9,-3],motivos:[["Doença",104],["Maternidade",31],["Outros",21],["Acidente",19]]};
 // FICTÍCIO: ranking semanal de vendas por marca e linha (pares e margem)
-const RANKING=[{m:"Vizzano",l:"Scarpin 1184",p:24100,mg:18},{m:"Moleca",l:"Sapatilha 5741",p:21800,mg:9},{m:"Beira Rio",l:"Tênis 4250",p:19300,mg:3},
-  {m:"Modare",l:"Bota 7053",p:12600,mg:24},{m:"Molekinha",l:"Sandália 2311",p:11900,mg:-4},{m:"Actvitta",l:"Tênis 4802",p:10400,mg:15},
-  {m:"BR Sport",l:"Chinelo 2252",p:9800,mg:21},{m:"Vizzano",l:"Sandália 6460",p:8700,mg:27}];
+const RANKING=[{m:"Vizzano",l:"Scarpin 1184",c:"Fechado",p:24100,mg:18},{m:"Moleca",l:"Sapatilha 5741",c:"Fechado",p:21800,mg:9},{m:"Beira Rio",l:"Tênis 4250",c:"Fechado",p:19300,mg:3},
+  {m:"Modare",l:"Bota 7053",c:"Botas",p:12600,mg:24},{m:"Molekinha",l:"Sandália 2311",c:"Aberto",p:11900,mg:-4},{m:"Actvitta",l:"Tênis 4802",c:"Fechado",p:10400,mg:15},
+  {m:"BR Sport",l:"Chinelo 2252",c:"Aberto",p:9800,mg:21},{m:"Vizzano",l:"Sandália 6460",c:"Aberto",p:8700,mg:27},{m:"Vizzano",l:"Bolsa 10054",c:"Bolsas",p:3300,mg:31}];
 /* datas de corte e conferência de cada peça */
 const CORTES={op:"Operação até dom 25/10",rh:"Pessoas até qui 23/10"};
 const CONF={base:{c:"Conferido com a base",l:"Conferido com a base (GER4002) na segunda de madrugada: sem diferenças nesta peça.",ok:true},
@@ -507,7 +541,8 @@ const BACKEND={
     return r.length?{encontrados:r,resumo:`${r.length} pedido(s) encontrado(s)`}:{encontrados:[],clientes_disponiveis:PEDIDOS_CLIENTES.map(p=>p.cliente),resumo:"nenhum pedido encontrado"}},
   consultar_faturamento:()=>({unidade:"R$",semanas:SEM,mercado_interno:FAT.mi,mercado_externo:FAT.me,resumo:"faturamento MI e ME, 4 semanas"}),
   consultar_pessoas:()=>({semana_rh:"até qui 23/10",unidades:FIL.map((f,i)=>({unidade:f[1]+" "+f[0],diretos:PESSOAS.dir[i],indiretos:PESSOAS.ind[i],afastados:PESSOAS.afast[i],variacao_semana:PESSOAS.varSem[i]})),afastados_por_motivo:Object.fromEntries(PESSOAS.motivos),resumo:"quadro de funcionários por unidade"}),
-  consultar_ranking:()=>({semana:SEM[W],linhas:RANKING.map(r=>({marca:r.m,linha:r.l,pares:r.p,margem_pct:r.mg})),resumo:`${RANKING.length} linhas do ranking`}),
+  consultar_ranking:()=>({semana:SEM[W],linhas:RANKING.map(r=>({marca:r.m,linha:r.l,categoria:r.c,pares:r.p,margem_contribuicao_pct:r.mg})),resumo:`${RANKING.length} linhas do ranking`}),
+  consultar_lucro_marca:()=>({unidade:"LL %",mercado_interno:Object.fromEntries(LL.mi),mercado_externo:Object.fromEntries(LL.me),total_mi:LL.totMI,total_me:LL.totME,resumo:"lucro líquido por marca, MI e ME"}),
   consultar_fluxo_caixa:()=>{if(!pecaRecebida("caixa"))return{negado:"O fluxo de caixa desta semana ainda não chegou do Financeiro.",resumo:"peça pendente: o fluxo de caixa ainda não chegou"};
     const det=PODE_CAIXA_DETALHADO.includes(S.user);
     return det?{semana:CAIXA.semana,unidade:"R$ mi",nivel:"detalhado",resumo_caixa:CAIXA.resumo,linhas:CAIXA.detalhe,resumo:"nível detalhado liberado"}
@@ -521,7 +556,8 @@ const TOOLDEFS=[
  ["consultar_fluxo_caixa","Fluxo de caixa da semana (realizado contra previsto). O nível de detalhe depende de quem está logado. Pode ainda não ter chegado.",{}],
  ["consultar_faturamento","Faturamento por semana no mercado interno (MI) e externo (ME): previsto, realizado e 2025.",{}],
  ["consultar_pessoas","Quadro de funcionários por unidade: diretos, indiretos, afastados e variação da semana. A semana do RH fecha na quinta.",{}],
- ["consultar_ranking","Ranking de vendas da semana por marca e linha: pares e margem.",{}]];
+ ["consultar_ranking","Ranking de vendas da semana por marca, linha e categoria (Aberto, Botas, Fechado, Bolsas): pares e margem de contribuição.",{}],
+ ["consultar_lucro_marca","Lucro líquido (LL %) por marca no mercado interno e externo, na semana.",{}]];
 
 /* ---------- utilidades ---------- */
 const sum=a=>a.reduce((x,y)=>x+y,0);
@@ -583,6 +619,11 @@ function baseCards(){
      big:nf(top.p/1e3,1)+" mil",bigU:`pares de ${top.m} ${top.l}`,
      chips:[[neg.length?`${neg.length} com margem negativa`:"Todas com margem positiva",neg.length?"bad":"ok"]],
      ev:{cap:["Mil pares por linha na semana","valor = margem"],rows:RANKING.slice(0,6).map(r=>({l:r.l,v:r.p/1e3,t:r.mg<0?"bad":r.mg<10?"warn":"ok",txt:`${r.mg}%`}))}}})(),
+   (()=>{const neg=LL.mi.filter(([,v])=>v<0).sort((a,b)=>a[1]-b[1]);const negME=LL.me.filter(([,v])=>v<0);
+     return{id:"ll",kicker:"Resultado por marca · LL",corte:"op",conf:"base",tone:neg.length?"warn":"ok",
+     sentence:`O lucro líquido ficou em ${nf(LL.totMI,1)}% no mercado interno e ${nf(LL.totME,1)}% no externo. ${neg.length?`${neg.length} marca${neg.length>1?"s fecharam":" fechou"} a semana no negativo no MI: ${neg.map(x=>x[0]).join(", ")}.`:"Todas as marcas ficaram positivas no MI."}${negME.length?"":" No ME, todas positivas."}`,
+     big:nf(LL.totMI,1)+"%",bigU:"LL no mercado interno",chips:[[`ME ${nf(LL.totME,1)}%`,"ok"],[neg.length?`${neg.length} negativas no MI`:"MI todo positivo",neg.length?"bad":"ok"]],
+     ev:{cap:["LL % por marca, MI",""],diverge:true,rows:[...LL.mi].sort((a,b)=>a[1]-b[1]).map(([l,v])=>({l,v,t:v<0?"bad":v<2?"warn":"ok",txt:sg(Math.round(v*10)/10).replace(".",",")}))}}})(),
    {id:"mes",kicker:"Mês até o dia 25",tone:toneP(pct(mR,mP)),
     sentence:`No mês, os pedidos estão em ${pct(mR,mP)}% do previsto e ${Math.abs(dlt(mR,mA))}% abaixo de 2025. A produção está em ${pct(mpR,mpP)}%.`,
     big:"R$ "+nf(mR/1e6,0)+" mi",bigU:"em pedidos no mês",
@@ -671,7 +712,7 @@ function clean(c){
     chips:Array.isArray(c.chips)?c.chips.slice(0,3).map(x=>[String(x?.[0]??x),t(x?.[1])]):[],ev};
 }
 /* ---------- estado individual (fica neste aparelho) ---------- */
-const KEY="mesa-poi-v6";
+const KEY="mesa-poi-v7";
 /* ---------- indicadores que uma decisão pode acompanhar ---------- */
 const IND=[
   {id:"ped-total",l:"Pedidos · total, % do previsto",v:w=>pct(tot(PED,w,1),tot(PED,w,0)),u:"%"},
@@ -737,9 +778,30 @@ function acompCard(){
     big:antigas.length?`${melhor.length}/${antigas.length}`:String(ds.length),bigU:antigas.length?"decisões com o indicador melhor":"decisões acompanhadas",
     chips:[],ev:ds.length?{cap:["Na decisão → agora","traço = valor na decisão"],rows:ds.slice(0,5).map(({o,a})=>({l:o.t,v:a.agora,ref:a.bv,t:a.nova?"info":a.delta>0?"ok":"bad",txt:`${a.bv}→${a.agora}${a.ind.u}`}))}:null};
 }
+const pctTxt=d=>`${d>=0?"+":"−"}${Math.abs(d)}%`;
+const DETALHES={
+  pedidos:()=>[{t:`Ritmo por dia útil · até o ${DIAUTIL.du}º dia útil`,note:"Compara o mesmo dia útil do mês no ano anterior, sem a distorção das semanas de calendário (página 7).",
+    rows:[["Entrada total (R$)",pctTxt(dlt(DIAUTIL.atual.entrada,DIAUTIL.anterior.entrada)),toneD(dlt(DIAUTIL.atual.entrada,DIAUTIL.anterior.entrada))],["Pedidos de pronta entrega (pares)",pctTxt(dlt(DIAUTIL.atual.pp,DIAUTIL.anterior.pp)),toneD(dlt(DIAUTIL.atual.pp,DIAUTIL.anterior.pp))],["Variação do preço médio",pctTxt(DIAUTIL.pmVar.entrada),"info"]]}],
+  faturamento:()=>[{t:"Faturamento líquido da semana",rows:[["Faturamento bruto","R$ "+mi(FATLIQ.bruto)+" mi"],["(−) Devoluções","R$ "+mi(FATLIQ.devol)+" mi"],["N.F. (refaturamento)","R$ "+mi(FATLIQ.refat)+" mi"],["Faturamento líquido","R$ "+mi(FATLIQ.bruto-FATLIQ.devol+FATLIQ.refat)+" mi","ok"]]},
+    {t:`Ritmo por dia útil · até o ${DIAUTIL.du}º dia útil`,note:"Mesmo dia útil do mês no ano anterior.",rows:[["Faturamento (R$)",pctTxt(dlt(DIAUTIL.atual.fat,DIAUTIL.anterior.fat)),toneD(dlt(DIAUTIL.atual.fat,DIAUTIL.anterior.fat))],["Variação do preço médio",pctTxt(DIAUTIL.pmVar.fat),"info"]]}],
+  ll:()=>[{t:"Mercado externo · LL % por marca",rows:LL.me.map(([l,v])=>[l,nf(v,1)+"%",v<0?"bad":"ok"])},{t:"Acumulado",rows:[["Acumulado das semanas (MI)",nf(LL.acumMI,1)+"%"],["Mensal realizado do ano anterior (MI)",nf(LL.anoAntMI,1)+"%",LL.anoAntMI<0?"bad":"ok"]]}],
+  ranking:()=>{const cats={};RANKING.forEach(r=>{cats[r.c]??={n:0,p:0};cats[r.c].n++;cats[r.c].p+=r.p});
+    return[{t:"Por categoria",note:"MC = margem de contribuição.",rows:Object.entries(cats).map(([c,v])=>[c,`${v.n} linha${v.n>1?"s":""} · ${nf(v.p/1e3,1)} mil pares`])},
+      {t:"Linhas do ranking",rows:RANKING.map(r=>[`${r.m} ${r.l} · ${r.c}`,`${nf(r.p/1e3,1)} mil pares · MC ${r.mg}%`,r.mg<0?"bad":r.mg<10?"warn":"ok"])}]},
+  pessoas:()=>{const un=FIL.map((f,i)=>[f[1],PESSOAS.dir[i]+PESSOAS.ind[i],PESSOAS.varSem[i]]).sort((a,b)=>b[1]-a[1]);
+    return[{t:"Por unidade (diretos + indiretos)",note:"Inclui as filiais, as regionais e as áreas administrativas. Semana do RH: sexta a quinta.",
+      rows:[...un.slice(0,6).map(([l,t,v])=>[l,`${nf(t)} · ${v>=0?"+":"−"}${Math.abs(v)} na semana`,v<0?"warn":"ok"]),...PESSOAS_ADM.map(([l,d,i])=>[l,nf(d+i)])]},
+      {t:"Afastados por filial",rows:FIL.map((f,i)=>[f[1],PESSOAS.afast[i]]).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([l,v])=>[l,nf(v)])}]},
+  caixa:()=>pecaRecebida("caixa")?CAIXA_ESTR.map(g=>({t:g.g,rows:[...g.l.map(([l,v])=>[l,"R$ "+nf(v,1)+" mi",v<0?"bad":"ok"]),[g.tot[0],"R$ "+nf(g.tot[1],1)+" mi","total"]]})).concat([{t:"Saldo",rows:[["Saldo inicial","R$ "+nf(CAIXA.resumo.saldo_inicial,1)+" mi"],["Saldo final","R$ "+nf(CAIXA.resumo.saldo_final,1)+" mi","total"]]}]):[],
+  "x-caixa":()=>pecaRecebida("caixa")?[{t:"Informativo",note:"Página extra do fluxo de caixa, restrita à Presidência.",rows:[["Aplicações financeiras","R$ "+nf(INFORMATIVO.aplicacoes,1)+" mi"],["Valor ACC","R$ "+nf(INFORMATIVO.acc,1)+" mi"],["Saldo total de empréstimos","R$ "+nf(INFORMATIVO.emprestimos,1)+" mi"],["Aumento do capital de giro","R$ "+nf(INFORMATIVO.capitalGiro,1)+" mi","ok"]]}]:[],
+  "x-devol":()=>[{t:"Devolução de transportadora por motivo (pares)",rows:DEVOL_MOTIVOS.map(([l,m,v])=>[`${l} · ${m}`,nf(v)])}]};
+function blocosHTML(c){
+  const bs=DETALHES[c.id]?.()||[];
+  return bs.map(b=>`<div class="dblock"><h4>${esc(b.t)}</h4>${b.note?`<p class="meta2">${esc(b.note)}</p>`:""}<dl>${b.rows.map(([l,v,t])=>`<div class="drow${t==="total"?" tot":""}"><dt>${esc(l)}</dt><dd class="${t&&t!=="total"?"tc-"+esc(t):""}">${esc(v)}</dd></div>`).join("")}</dl></div>`).join("");
+}
 const baseRaw=()=>[...BASE.filter(c=>c.id!=="mes"),caixaCard(),acompCard()];
 const edicao=()=>(live()?LIVE.edicao:S.edicao)||{};
-function baseAll(){const e=edicao(),ord=e.order||[],off=new Set(e.off||[]);const pos=id=>{const i=ord.indexOf(id);return i<0?999:i};
+function baseAll(){const e=edicao(),ord=e.order||MANUAL_ORDER,off=new Set(e.off||[]);const pos=id=>{const i=ord.indexOf(id);return i<0?999:i};
   return baseRaw().filter(c=>!off.has(c.id)).map((c,i)=>({c,i})).sort((a,b)=>pos(a.c.id)-pos(b.c.id)||a.i-b.i).map(x=>x.c)}
 async function actEdicao(patch){
   if(live()){const ref=LIVE.db.doc(`${P}/estado/edicao`);return guard(()=>ref.set({...(LIVE.edicao||{}),...patch,by:LIVE.me}))}
@@ -748,9 +810,11 @@ async function actEdicao(patch){
 const ORIGEM={base:"Sistema",rh:"Excel do RH",fin:"Excel do Financeiro",com:"E-mail do Comercial"};
 function edicaoHTML(){
   const e=edicao(),off=new Set(e.off||[]),ordem=[...baseAll(),...baseRaw().filter(c=>off.has(c.id))];
-  const status=c=>c.conf==="fin"?(pecaRecebida("caixa")?"chegou":"aguardando"):c.conf==="rh"?"chegou na sexta":c.conf?"chegou":"gerado pela mesa";
+  const status=c=>c.conf==="fin"?(pecaRecebida("caixa")?"chegou · entregue à parte pelo Financeiro":"aguardando · entregue à parte pelo Financeiro"):c.conf==="rh"?"chegou na sexta":c.conf==="com"?`chegou · ${RANKING_CHECK.linhas} linhas${RANKING_CHECK.semFoto?` · ${RANKING_CHECK.semFoto} sem foto`:" · completo"}`:c.conf?"chegou":"gerado pela mesa";
+  const difs=CONFERENCIA.flatMap(([g,l])=>l.filter(([,d])=>d!==0).map(([n,d])=>`${g}: ${n} (${nf(d,2)})`)),nInd=CONFERENCIA.reduce((a,[,l])=>a+l.length,0);
   return`<div class="col ed"><div class="colhead"><h3>Edição da semana · 19 a 25 de outubro</h3><button type="button" class="atabtn" id="publicar">${e.publicada?"Publicar de novo":"Publicar edição"}</button></div>
-    <p class="sub">${e.publicada?`Publicada às ${esc(new Date(e.at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}))}. `:"Ainda não publicada. "}Mude a ordem, tire ou inclua peças. Os diretores veem a edição como está aqui.</p>
+    <p class="sub">${e.publicada?`Publicada às ${esc(new Date(e.at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}))}. `:"Ainda não publicada. "}A ordem segue o manual da Controladoria; mude, tire ou inclua peças. Os diretores veem a edição como está aqui. ${e.order?`<button type="button" class="linkbtn" id="ordem-manual">Voltar à ordem do manual</button>`:""}</p>
+    <div class="confbox${difs.length?" warn":""}"><b>Conferência Mapa Diário × POI (GER4002)</b><span>${nInd} indicadores conferidos${difs.length?` · ${difs.length} com diferença: ${esc(difs.join("; "))}`:" · sem diferenças"}. Usada na montagem; não vai à mesa.</span></div>
     <ol class="pecas">${ordem.map((c,i)=>{const o=off.has(c.id);return`<li class="peca${o?" off":""}"><span class="ord">${o?"–":i+1}</span>
       <div class="pinfo"><b>${esc(c.kicker.split(" · ")[0])}</b><span>${esc(c.conf?ORIGEM[c.conf]:"Mesa POI")} · ${esc(status(c))}${c.corte==="rh"?" · pessoas até qui":""}</span></div>
       <div class="pbtns">${o?"":`<button type="button" class="round" data-mv="-1" data-pid="${esc(c.id)}" aria-label="Subir">↑</button><button type="button" class="round" data-mv="1" data-pid="${esc(c.id)}" aria-label="Descer">↓</button>`}
@@ -763,7 +827,7 @@ const findCard=id=>baseAll().find(c=>c.id===id)||personalCards().find(c=>c.id===
 /* ---------- Minha mesa: o que cada papel apresenta e recebe ---------- */
 const PAPEIS={
   "Rodrigo":{foco:"Você conduz a reunião. Aqui está o todo e o que ainda está aberto.",le:["pedidos","queda","acomp"],extra:"todo"},
-  "Sr. Roberto":{foco:"Presidência: caixa e resultado. O Informativo do caixa é só seu.",le:["caixa","ranking"],extra:"caixa"},
+  "Sr. Roberto":{foco:"Presidência: caixa e resultado. O Informativo do caixa é só seu.",le:["caixa","ll","ranking"],extra:"caixa"},
   "João":{foco:"Indústria: você apresenta faturamento, produção e matéria-prima.",le:["faturamento","producao","acomp"],extra:"mp"},
   "Maribel":{foco:"Comercial: você apresenta entrada de pedidos e carteira.",le:["pedidos","queda","carteira","ranking"],extra:"carteira"},
   "Clóvis":{foco:"Devoluções, produto pronto e a conferência do caixa com o Financeiro.",le:["caixa"],extra:"devol"},
@@ -790,11 +854,11 @@ function personalCards(){
   if(x==="caixa"&&!pecaRecebida("caixa"))out.push({id:"x-caixa",dark:true,pend:true,kicker:"Informativo do caixa · Presidência",tone:"info",excl:true,corte:"op",conf:"fin",
     sentence:"O Informativo chega junto com o fluxo de caixa do Financeiro. Você será avisado quando chegar.",big:"",bigU:"",chips:[["Aguardando","warn"]],ev:null});
   else if(x==="caixa"){const r=CAIXA.resumo;out.push({id:"x-caixa",dark:true,kicker:"Informativo do caixa · Presidência",tone:"ok",excl:true,corte:"op",conf:"fin",
-    sentence:`O caixa fechou a semana em R$ ${nf(r.saldo_final,1)} mi, R$ ${nf(r.saldo_final-r.saldo_inicial,1)} mi acima do início. A maior saída foi matéria-prima, com R$ 121,6 mi.`,
+    sentence:`O caixa fechou a semana em R$ ${nf(r.saldo_final,1)} mi, com saldo operacional de R$ ${nf(CAIXA_ESTR[1].tot[1],1)} mi. O capital de giro cresceu R$ ${nf(INFORMATIVO.capitalGiro,1)} mi; as aplicações somam R$ ${nf(INFORMATIVO.aplicacoes,1)} mi.`,
     big:"R$ "+nf(r.saldo_final,1)+" mi",bigU:"saldo final da semana",chips:[["Dado fictício","info"]],
     ev:{cap:["Linhas do fluxo, R$ mi",""],diverge:true,rows:Object.entries(CAIXA.detalhe).map(([l,v])=>({l,v,t:v>=0?"ok":"bad",txt:nf(v,1)}))}})}
   if(x==="devol"){const n=DEVOL.saldoQ.length-1;out.push({id:"x-devol",dark:true,kicker:"Devoluções em transportadora",tone:"warn",excl:true,
-    sentence:`O saldo de devoluções disponíveis subiu para ${nf(DEVOL.saldoQ[n]/1e3,1)} mil pares (R$ ${mi(DEVOL.saldoV[n])} mi): entraram ${nf(DEVOL.entQ[n]/1e3,0)} mil e saíram só ${nf(DEVOL.saiQ[n]/1e3,0)} mil na semana.`,
+    sentence:`O saldo de devoluções disponíveis subiu para ${nf(DEVOL.saldoQ[n]/1e3,1)} mil pares (R$ ${mi(DEVOL.saldoV[n])} mi): entraram ${nf(DEVOL.entQ[n]/1e3,0)} mil e saíram só ${nf(DEVOL.saiQ[n]/1e3,0)} mil. O principal motivo é "${DEVOL_MOTIVOS[0][0].toLowerCase()}".`,
     big:sg(dlt(DEVOL.saldoQ[n],DEVOL.saldoQ[n-1])),bigU:"no saldo contra a semana anterior",chips:[["Saídas abaixo das entradas","warn"]],
     ev:{cap:["Saldo, mil pares",""],rows:DEVOL.sem.map((s,i)=>({l:s,v:DEVOL.saldoQ[i]/1e3,t:i===n?"warn":"info",txt:nf(DEVOL.saldoQ[i]/1e3,0)}))}})}
   if(x==="mp"){const c=MP.consumo[3],c25=MP.consumo25[3];out.push({id:"x-mp",dark:true,kicker:"Matéria-prima",tone:"ok",excl:true,
@@ -924,7 +988,7 @@ const askedOf=x=>!x||x.kind==="insight"?"":x.kind==="descoberta"?`${who(x.by)} p
 function tileHTML(c,x){
   const id=c.id,mk=markers(id),mine=markedByMe(id),ed=getEdit(id),ns=notesOf(id);
   const foco=live()&&LIVE.foco?.card===id;
-  return `<article class="tile${c.id==="queda"||c.dark?" dark":""}${c.id==="pedidos"||c.id==="acomp"?" wide":""}${c.id==="acomp"?" full":""}${c.pend?" pend":""}${x?" extra":""}${mk.length?" marked":""}${foco?" foco":""}" data-id="${esc(id)}" id="c-${esc(id)}" tabindex="0">
+  return `<article class="tile${c.id==="queda"||c.dark?" dark":""}${c.id==="pedidos"||c.id==="acomp"?" wide":""}${c.pend?" pend":""}${x?" extra":""}${mk.length?" marked":""}${foco?" foco":""}" data-id="${esc(id)}" id="c-${esc(id)}" tabindex="0">
     ${foco?`<span class="focotag">${esc(who(LIVE.foco.by))} está mostrando</span>`:""}
     <div class="thead"><span class="kicker"><span class="tone ${esc(c.tone||"info")}"></span>${esc(kickerOf(c,x))}${c.conf?`<span class="ci${CONF[c.conf].ok?" ok":""}" title="${esc(CONF[c.conf].c)}" aria-label="${esc(CONF[c.conf].c)}">${CONF[c.conf].ok?IC.check:IC.info}</span>`:""}${c.excl?' <span class="excl">Só para você</span>':""}</span><button type="button" class="round" data-act="open" aria-label="Abrir detalhe">${IC.open}</button></div>
     ${x&&askedOf(x)?`<div class="asked">${esc(askedOf(x))}</div>`:""}
@@ -954,6 +1018,7 @@ function drawerHTML(c,x){
     ${(c.chips||[]).length?`<div class="tfoot">${c.chips.map(([t,k])=>`<span class="chip ${esc(k)}">${esc(t)}</span>`).join("")}</div>`:""}
     ${evHTML(c.ev)}
     ${c.corte||c.conf?`<div class="dmeta">${c.corte?`<div><b>Data de corte:</b> ${esc(CORTES[c.corte])}.${c.corte==="rh"?" A semana do RH fecha na quinta; a da operação, no domingo.":""}</div>`:""}${c.conf?`<div class="conf${CONF[c.conf].ok?" ok":""}">${CONF[c.conf].ok?IC.check:IC.info}<span>${esc(CONF[c.conf].l)}</span></div>`:""}</div>`:""}
+    ${blocosHTML(c)}
     ${c.pend?`<div class="dactions"><button type="button" class="act" data-act="chegou">Simular a chegada do fluxo de caixa</button></div>`:""}
     ${traceHTML(x?.trace,x?.role)}
     <div class="dactions">
@@ -1442,6 +1507,7 @@ document.getElementById("tv").addEventListener("click",e=>{
 document.addEventListener("keydown",e=>{const t=document.getElementById("tv");if(t.hidden)return;if(e.key==="ArrowRight"){TVI++;renderTV()}if(e.key==="ArrowLeft"){TVI--;renderTV()}if(e.key==="Escape"){t.hidden=true;try{document.fullscreenElement&&document.exitFullscreen()}catch(err){}}});
 document.querySelector('[data-pane="minha"]').addEventListener("click",e=>{
   const mv=e.target.closest("[data-mv]");const tg=e.target.closest("[data-tg]");const rc=e.target.closest("[data-recebido]");
+  if(e.target.closest("#ordem-manual")){actEdicao({order:null});setHint("A edição voltou à ordem do manual.");return}
   if(e.target.closest("#publicar")){actEdicao({publicada:true,at:Date.now(),order:baseAll().map(c=>c.id)});setHint("Edição publicada: os diretores já veem esta versão.");return}
   if(rc){actPeca(rc.dataset.recebido,true);return}
   if(mv){const ids=baseAll().map(c=>c.id),i=ids.indexOf(mv.dataset.pid),j=i+(+mv.dataset.mv);if(j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];actEdicao({order:ids});return}

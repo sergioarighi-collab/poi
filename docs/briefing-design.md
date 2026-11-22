@@ -91,7 +91,7 @@ Cada peça tem o seu dono, o seu prazo e o seu formato. Tudo converge na terça.
 | Estoque e devoluções | Quanto produto pronto está disponível ou empenhado, e quanto voltou? | Parcial (devoluções, na Minha mesa do Clóvis) |
 | Pessoas | Quantos funcionários diretos e indiretos temos, e quantos afastados? | Sim |
 | Caixa | Como o realizado se compara ao previsto? | Sim (resumo para todos; Informativo só da Presidência) |
-| Produto e resultado | O que mais vende, com que margem, e qual o lucro por marca? | Parcial (ranking com margem; falta o LL por marca) |
+| Produto e resultado | O que mais vende, com que margem, e qual o lucro por marca? | Sim (ranking com MC e cartão de LL por marca) |
 
 ## A estrutura muda com a empresa
 
