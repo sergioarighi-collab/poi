@@ -96,6 +96,7 @@ main{padding-bottom:170px;min-height:100vh}
 .sechead{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin:0 0 14px}
 .sechead h2{font-weight:500;font-size:1.15rem;margin:0}
 .sechead p{margin:0;color:var(--muted);font-size:.86rem}
+#outs-head p{margin-top:4px}
 .bento{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
 .bento.two{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media (max-width:980px){.bento{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -214,6 +215,15 @@ main{padding-bottom:170px;min-height:100vh}
 .pauta-card li.done{color:var(--muted);text-decoration:line-through}
 .pauta-card li.done::before{background:var(--line)}
 #outs-head.gap{margin-top:30px}
+.acomp{grid-column:2;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:4px}
+.item select.indsel{border:0;background:var(--track);border-radius:999px;font-size:.74rem;padding:3px 8px;max-width:100%;width:auto}
+.atabtn{border:0;background:var(--dark);color:var(--on-dark);border-radius:999px;padding:8px 14px;font-size:.86rem;display:inline-flex;gap:6px;align-items:center}
+.atabtn:disabled{opacity:.6;cursor:progress}
+.ata-banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:var(--surface);box-shadow:var(--shadow);border-radius:20px;padding:12px 18px;margin-bottom:18px;font-size:.9rem}
+.ata h3{font-weight:500;font-size:.95rem;margin:10px 0 4px}
+.ata ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:.92rem}
+.ata .muted{color:var(--muted);font-size:.8rem}
+.ata .resumo{font-size:1.02rem;line-height:1.5;margin:0}
 
 /* drawer */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:50}
@@ -334,7 +344,9 @@ main{padding-bottom:170px;min-height:100vh}
       <div class="sechead"><h2>Pautas da reunião</h2><p>O que cada diretor escolheu compartilhar antes de terça.</p></div>
       <div class="bento" id="pautas"></div>
     </div>
-    <div class="sechead" id="outs-head"><h2>Saídas da reunião</h2><p id="outs-sub"></p></div>
+    <div id="ata-banner"></div>
+    <div class="sechead" id="outs-head"><div><h2>Saídas da reunião</h2><p id="outs-sub"></p></div>
+      <button type="button" class="atabtn" id="gerar-ata">Gerar ata da reunião</button></div>
     <div class="cols" id="outs"></div>
   </section>
 </main>
@@ -467,11 +479,6 @@ function baseCards(){
     big:nf(cQ/1e6,1)+" mi",bigU:"pares em carteira",
     chips:[[`${sg(dlt(cQ,cQa))} em pares`,toneD(dlt(cQ,cQa))],[`${sg(dlt(cV,cVa))} em valor (R$ ${nf(cV/1e6,0)} mi)`,toneD(dlt(cV,cVa))]],
     ev:{cap:["Maiores variações por filial","vs out/2025"],diverge:true,rows:FIL.map((f,i)=>({l:f[1],v:dlt(CART.qAtual[i],CART.qAnt[i])})).sort((a,b)=>a.v-b.v).slice(0,5).map(r=>({...r,t:toneD(r.v),txt:sg(r.v)}))}},
-   {id:"promessa",kicker:"Promessa da semana passada",tone:fl10[1]>fl10[0]?"ok":"warn",
-    sentence:`João disse que Candelária FL10 recuperaria com os pedidos a liberar. Ela saiu de ${fl10[0]}% para ${fl10[1]}% do previsto.`,
-    big:`${fl10[0]}% → ${fl10[1]}%`,bigU:"do previsto, FL10",
-    chips:[["Melhorou, mas ainda abaixo do previsto","warn"]],
-    ev:{cap:["Candelária FL10, % do previsto",""],rows:SEM.map((s,w)=>{const p=pct(PED[w][1][4],PED[w][0][4]);return{l:s,v:p,ref:100,t:toneP(p),txt:p+"%"}})}},
    {id:"mes",kicker:"Mês até o dia 25",tone:toneP(pct(mR,mP)),
     sentence:`No mês, os pedidos estão em ${pct(mR,mP)}% do previsto e ${Math.abs(dlt(mR,mA))}% abaixo de 2025. A produção está em ${pct(mpR,mpP)}%.`,
     big:"R$ "+nf(mR/1e6,0)+" mi",bigU:"em pedidos no mês",
@@ -558,14 +565,27 @@ function clean(c){
     chips:Array.isArray(c.chips)?c.chips.slice(0,3).map(x=>[String(x?.[0]??x),t(x?.[1])]):[],ev};
 }
 /* ---------- estado individual (fica neste aparelho) ---------- */
-const KEY="mesa-poi-v3";
+const KEY="mesa-poi-v4";
+/* ---------- indicadores que uma decisão pode acompanhar ---------- */
+const IND=[
+  {id:"ped-total",l:"Pedidos · total, % do previsto",v:w=>pct(tot(PED,w,1),tot(PED,w,0)),u:"%"},
+  {id:"prod-total",l:"Produção · total, % do previsto",v:w=>pct(tot(PROD,w,1),tot(PROD,w,0)),u:"%"},
+  ...FIL.map((f,i)=>({id:"ped-"+f[0],l:`Pedidos · ${f[1]}, % do previsto`,v:w=>pct(PED[w][1][i],PED[w][0][i]),u:"%"})),
+  ...FIL.map((f,i)=>({id:"prod-"+f[0],l:`Produção · ${f[1]}, % do previsto`,v:w=>pct(PROD[w][1][i],PROD[w][0][i]),u:"%"}))];
+const indOf=id=>IND.find(x=>x.id===id);
+function acompanhamento(o){
+  const ind=indOf(o.ind);if(!ind)return null;
+  const bw=o.base?.w??W,bv=o.base?.v??ind.v(bw),agora=ind.v(W);
+  return{ind,bw,bv,agora,delta:agora-bv,nova:bw===W};
+}
 const USUARIOS=["Rodrigo","Sr. Roberto","João","Maribel","Clóvis","Luiz","Miran"];
 const DIRETORES=["—","Rodrigo","Sr. Roberto","João","Maribel","Clóvis","Luiz","Miran","Controladoria","TI"];
 const SEED={user:"Rodrigo",online:true,queue:[],scale:1,marked:{},edits:{},notes:{},hidden:{},answers:[],follow:true,liveOn:false,
   outs:[
     {id:"o1",k:"pergunta",t:"O pedido grande de Novo Hamburgo de 2025 se repete este ano?",who:"Maribel",done:false,from:"Aberta na semana de 12 a 18"},
     {id:"o2",k:"pendencia",t:"Separar bolsas de produção e de revenda no produto pronto",who:"Controladoria",done:false},
-    {id:"o3",k:"decisao",t:"Manter o ritmo de produção até a carteira de novembro fechar",who:"João",done:false,from:"Exemplo"}]};
+    {id:"o3",k:"decisao",t:"Manter o ritmo de produção até a carteira de novembro fechar",who:"João",done:false,from:"Decidida na semana de 12 a 18",ind:"prod-total",base:{w:2,v:101}},
+    {id:"o4",k:"decisao",t:"Liberar os pedidos travados de Candelária FL10",who:"João",done:false,from:"Decidida na semana de 12 a 18",ind:"ped-FL10",base:{w:2,v:49}}]};
 let S; try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
 S=S&&S.outs?Object.assign(structuredClone(SEED),S):structuredClone(SEED);
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -575,7 +595,7 @@ const setHint=t=>{document.getElementById("hint").textContent=t};
 
 /* ---------- estado compartilhado (reunião ao vivo) ---------- */
 const P="mesa/s2026-10-19";
-const LIVE={pautas:[],on:false,ready:false,db:null,room:null,user:null,me:null,cards:{},notes:[],extras:[],outs:[],foco:null,peers:[],names:{},avatars:{},unsubs:[],readonly:false,dirty:false};
+const LIVE={ata:null,pautas:[],on:false,ready:false,db:null,room:null,user:null,me:null,cards:{},notes:[],extras:[],outs:[],foco:null,peers:[],names:{},avatars:{},unsubs:[],readonly:false,dirty:false};
 const live=()=>LIVE.on;
 const getEdit=id=>live()?(LIVE.cards[id]?.edit??null):(S.edits[id]??null);
 const getEditBy=id=>live()?LIVE.cards[id]?.editBy:null;
@@ -586,13 +606,23 @@ const extras=()=>live()?LIVE.extras:S.answers;
 const outs=()=>live()?LIVE.outs:S.outs;
 const who=x=>live()?(x===LIVE.me?"Você":(LIVE.names[x]||"Alguém")):(x||"");
 let BASE=baseCards();
-const findCard=id=>BASE.find(c=>c.id===id)||personalCards().find(c=>c.id===id)||extras().find(x=>x.card?.id===id)?.card;
+function acompCard(){
+  const ds=outs().filter(o=>o.k==="decisao"&&o.ind).map(o=>({o,a:acompanhamento(o)})).filter(x=>x.a);
+  const antigas=ds.filter(x=>!x.a.nova),melhor=antigas.filter(x=>x.a.delta>0);
+  return{id:"acomp",kicker:"Decisões em acompanhamento",tone:antigas.length&&melhor.length===antigas.length?"ok":"warn",
+    sentence:ds.length?(antigas.length?`${melhor.length} de ${antigas.length} ${antigas.length>1?"decisões":"decisão"} de semanas anteriores ${melhor.length===1?"melhorou":"melhoraram"} o indicador desde que ${antigas.length>1?"foram tomadas":"foi tomada"}.${ds.length>antigas.length?` ${ds.length-antigas.length} nova${ds.length-antigas.length>1?"s":""} começa${ds.length-antigas.length>1?"m":""} a ser conferida${ds.length-antigas.length>1?"s":""} na próxima edição.`:""}`:"As decisões desta semana começam a ser conferidas na próxima edição.")
+      :"Nenhuma decisão com indicador ainda. Em Saídas, escolha o que acompanhar em cada decisão.",
+    big:antigas.length?`${melhor.length}/${antigas.length}`:String(ds.length),bigU:antigas.length?"decisões com o indicador melhor":"decisões acompanhadas",
+    chips:[],ev:ds.length?{cap:["Na decisão → agora","traço = valor na decisão"],rows:ds.slice(0,5).map(({o,a})=>({l:o.t,v:a.agora,ref:a.bv,t:a.nova?"info":a.delta>0?"ok":"bad",txt:`${a.bv}→${a.agora}${a.ind.u}`}))}:null};
+}
+const baseAll=()=>[...BASE.filter(c=>c.id!=="mes"),acompCard()];
+const findCard=id=>baseAll().find(c=>c.id===id)||personalCards().find(c=>c.id===id)||extras().find(x=>x.card?.id===id)?.card;
 
 /* ---------- Minha mesa: o que cada papel apresenta e recebe ---------- */
 const PAPEIS={
-  "Rodrigo":{foco:"Você conduz a reunião. Aqui está o todo e o que ainda está aberto.",le:["pedidos","queda","carteira"],extra:"todo"},
+  "Rodrigo":{foco:"Você conduz a reunião. Aqui está o todo e o que ainda está aberto.",le:["pedidos","queda","acomp"],extra:"todo"},
   "Sr. Roberto":{foco:"Caixa e resultado. O fluxo detalhado é só seu.",le:[],extra:"caixa"},
-  "João":{foco:"Indústria: você apresenta faturamento, produção e matéria-prima.",le:["producao","promessa"],extra:"mp"},
+  "João":{foco:"Indústria: você apresenta faturamento, produção e matéria-prima.",le:["producao","acomp"],extra:"mp"},
   "Maribel":{foco:"Comercial: você apresenta entrada de pedidos e carteira.",le:["pedidos","queda","carteira"],extra:"carteira"},
   "Clóvis":{foco:"Devoluções, produto pronto e a conferência do caixa com o financeiro.",le:[],extra:"devol"},
   "Luiz":{foco:"Acompanhe a semana e fixe o que importa para a sua área.",le:[],extra:null},
@@ -683,7 +713,7 @@ async function actAddOut(o){
 }
 async function actUpdOut(id,patch){
   if(live())return guard(()=>LIVE.db.doc(`${P}/saidas/${id}`).update(patch));
-  Object.assign(S.outs.find(o=>o.id===id)||{},patch);save();renderOuts();
+  Object.assign(S.outs.find(o=>o.id===id)||{},patch);save();renderAll();
 }
 async function actFoco(id){if(live())return guard(()=>LIVE.db.doc(`${P}/estado/foco`).set({card:id,by:LIVE.me,at:Date.now()}))}
 async function addOuts(items,from){
@@ -773,7 +803,7 @@ function renderHero(){
     st(mi(tot(PED,W,1)),"R$ mi em pedidos na semana")+st(nf(tot(PROD,W,1)/1e6,2),"mi pares produzidos")+st(nf(sum(CART.qAtual)/1e6,1),"mi pares em carteira");
 }
 function renderCards(){
-  const all=BASE.filter(c=>c.id!=="mes");
+  const all=baseAll();
   const vis=all.filter(c=>!S.hidden[c.id]),hid=all.filter(c=>S.hidden[c.id]);
   document.getElementById("cards").innerHTML=vis.map(c=>tileHTML(c)).join("");
   document.getElementById("hiddenrow").innerHTML=hid.length?`Ocultos só para você: ${hid.map(c=>`<button type="button" class="act" data-show="${esc(c.id)}">${esc(c.kicker.split(" · ")[0])}</button>`).join(" ")}`:"";
@@ -787,6 +817,14 @@ function renderExtras(){
   const n=document.getElementById("n-insights");n.hidden=!xs.length;n.textContent=xs.length;
 }
 const KINDS=[["decisao","Decisões"],["pendencia","Pendências"],["pergunta","Perguntas abertas"]];
+function acompHTML(o){
+  const a=acompanhamento(o);
+  const sel=`<select class="indsel" data-f="ind" aria-label="Indicador para acompanhar"><option value="">Acompanhar um indicador…</option>${IND.map(i=>`<option value="${esc(i.id)}" ${i.id===o.ind?"selected":""}>${esc(i.l)}</option>`).join("")}</select>`;
+  if(!a)return`<div class="acomp">${sel}</div>`;
+  const tone=a.nova?"info":a.delta>0?"ok":a.delta<0?"bad":"warn";
+  const txt=a.nova?`Hoje: ${a.agora}${a.ind.u}. Confere na próxima edição.`:`Na decisão (${SEM[a.bw]}): ${a.bv}${a.ind.u} → agora (${SEM[W]}): ${a.agora}${a.ind.u}`;
+  return`<div class="acomp">${sel}<span class="chip ${tone}">${esc(txt)}</span></div>`;
+}
 function renderOuts(){
   const list=outs();
   document.getElementById("outs").innerHTML=KINDS.map(([k,label])=>{
@@ -795,7 +833,8 @@ function renderOuts(){
       ${items.length?items.map(o=>`<div class="item${o.done?" done":""}" data-out="${esc(o.id)}">
         <input type="checkbox" ${o.done?"checked":""} aria-label="Concluir">
         <span class="t" contenteditable="true">${esc(o.t)}</span>
-        <div class="meta"><select aria-label="Responsável">${DIRETORES.map(d=>`<option ${d===o.who?"selected":""}>${esc(d)}</option>`).join("")}</select>${o.from?`<span>${esc(o.from)}</span>`:""}${live()&&o.by?`<span>por ${esc(who(o.by))}</span>`:""}</div>
+        <div class="meta"><select aria-label="Responsável" data-f="who">${DIRETORES.map(d=>`<option ${d===o.who?"selected":""}>${esc(d)}</option>`).join("")}</select>${o.from?`<span>${esc(o.from)}</span>`:""}${live()&&o.by?`<span>por ${esc(who(o.by))}</span>`:""}</div>
+        ${k==="decisao"?acompHTML(o):""}
       </div>`).join(""):`<div class="empty">Nada ainda.</div>`}
       <form class="add" data-add="${k}"><input type="text" id="add-${k}" placeholder="Adicionar"><button aria-label="Adicionar">+</button></form></div>`}).join("");
   document.getElementById("outs-sub").textContent=live()?"Compartilhado com todos na reunião. O que ficar aberto volta na semana que vem.":"O que a mesa decidiu e quem leva adiante. O que ficar aberto volta na semana que vem.";
@@ -811,7 +850,7 @@ function renderMine(){
   const papel=PAPEIS[S.user]||{foco:"",le:[]},m=meu();
   document.getElementById("mine-name").textContent=S.user;
   document.getElementById("mine-foco").textContent=papel.foco;
-  const parte=[...personalCards(),...BASE.filter(c=>papel.le.includes(c.id))];
+  const parte=[...personalCards(),...baseAll().filter(c=>papel.le.includes(c.id))];
   const naParte=new Set(parte.map(c=>c.id));
   const pins=m.pins.filter(id=>!naParte.has(id)).map(id=>{const x=extras().find(e=>e.card?.id===id);return x?{c:x.card,x}:(BASE.find(b=>b.id===id)?{c:BASE.find(b=>b.id===id)}:null)}).filter(Boolean);
   const minhas=outs().filter(o=>o.who===S.user);
@@ -831,8 +870,77 @@ function renderMine(){
     ${minhas.length?minhas.map(o=>`<div class="item${o.done?" done":""}" data-mineout="${esc(o.id)}"><input type="checkbox" ${o.done?"checked":""} aria-label="Concluir"><span class="t">${esc(o.t)}</span><div class="meta"><span>${esc(({decisao:"Decisão",pendencia:"Pendência",pergunta:"Pergunta"})[o.k]||"")}</span>${o.from?`<span>${esc(o.from)}</span>`:""}</div></div>`).join(""):`<div class="empty">Nenhuma pendência em seu nome.</div>`}`;
   const n=document.getElementById("n-minha"),k=m.pauta.filter(p=>!p.done).length+minhas.filter(o=>!o.done).length;n.hidden=!k;n.textContent=k;
 }
+function ataAtual(){return live()?LIVE.ata:S.ata}
+function renderAtaBanner(){
+  const a=ataAtual();const el=document.getElementById("ata-banner");
+  el.innerHTML=a?`<div class="ata-banner"><span>Ata gerada${live()&&a.by?` por ${esc(who(a.by))}`:""} às ${esc(new Date(a.at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}))}${a.fonte==="ia"?" com a IA":""}.</span><button type="button" class="act" id="abrir-ata">Abrir ata</button></div>`:"";
+}
+function ataHTML(a){
+  const li=xs=>xs.length?`<ul>${xs.map(x=>`<li>${x}</li>`).join("")}</ul>`:`<p class="muted">Nada registrado.</p>`;
+  const resp=w=>w&&w!=="—"?` <span class="muted">· ${esc(w)}</span>`:` <span class="muted">· sem responsável</span>`;
+  return `<div class="ata" style="display:contents">
+    <div class="thead"><span class="kicker"><span class="tone ok"></span>Ata da reunião do POI · semana de 19 a 25 de outubro</span><button type="button" class="round" data-ata="close" aria-label="Fechar">${IC.close}</button></div>
+    <p class="muted">Gerada${live()&&a.by?` por ${esc(who(a.by))}`:""} em ${esc(new Date(a.at).toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}))}${a.participantes?.length?` · Participantes: ${esc(a.participantes.join(", "))}`:""}</p>
+    <h3>Resumo</h3><p class="resumo">${esc(a.resumo)}</p>
+    <h3>Decisões</h3>${li(a.decisoes.map(d=>`${esc(d.t)}${resp(d.who)}${d.acomp?`<br><span class="muted">${esc(d.acomp)}</span>`:""}`))}
+    <h3>Pendências</h3>${li(a.pendencias.map(d=>`${esc(d.t)}${resp(d.who)}`))}
+    <h3>Perguntas abertas</h3>${li(a.perguntas.map(d=>`${esc(d.t)}${resp(d.who)}`))}
+    <h3>Destaques da discussão</h3>${li(a.destaques.map(esc))}
+    ${a.pautas?.length?`<h3>Pautas compartilhadas</h3>${li(a.pautas.map(p=>`<b>${esc(p.de)}:</b> ${esc(p.itens.join("; "))}`))}`:""}
+    <div class="dactions"><button type="button" class="act" data-ata="copy">Copiar texto</button><button type="button" class="act" data-ata="regen">Gerar de novo</button></div>
+    <p class="muted">Na versão final, a ata vai por e-mail para cada diretor e para as áreas com pendências.</p>
+  </div>`;
+}
+function ataTexto(a){
+  const l=(t,xs)=>`${t}\n${xs.length?xs.map(x=>"- "+x).join("\n"):"- Nada registrado."}`;
+  const r=w=>w&&w!=="—"?` (${w})`:" (sem responsável)";
+  return [`ATA DA REUNIÃO DO POI · SEMANA DE 19 A 25 DE OUTUBRO`,`Gerada em ${new Date(a.at).toLocaleString("pt-BR")}`+(a.participantes?.length?` · Participantes: ${a.participantes.join(", ")}`:""),"",
+    "RESUMO",a.resumo,"",l("DECISÕES",a.decisoes.map(d=>d.t+r(d.who)+(d.acomp?` · ${d.acomp}`:""))),"",l("PENDÊNCIAS",a.pendencias.map(d=>d.t+r(d.who))),"",
+    l("PERGUNTAS ABERTAS",a.perguntas.map(d=>d.t+r(d.who))),"",l("DESTAQUES DA DISCUSSÃO",a.destaques),
+    ...(a.pautas?.length?["",l("PAUTAS COMPARTILHADAS",a.pautas.map(p=>`${p.de}: ${p.itens.join("; ")}`))]:[])].join("\n");
+}
+function materialDaReuniao(){
+  const txt=id=>{const c=findCard(id);return c?(getEdit(id)??c.sentence):""};
+  const os=outs();
+  const acompTxt=o=>{const a=acompanhamento(o);return a?(a.nova?`Acompanhando ${a.ind.l}: ${a.agora}${a.ind.u} hoje`:`${a.ind.l}: ${a.bv}${a.ind.u} na decisão → ${a.agora}${a.ind.u} agora`):""};
+  const marcados=[...baseAll(),...extras().map(x=>x.card).filter(Boolean)].filter(c=>markers(c.id).length).map(c=>`${getEdit(c.id)??c.sentence} (marcado por ${markers(c.id).map(who).join(", ")})`);
+  const comentarios=[...baseAll(),...extras().map(x=>x.card).filter(Boolean)].flatMap(c=>notesOf(c.id).map(n=>`${who(n.by)} sobre "${c.kicker}": ${n.t}`));
+  const insights=extras().filter(x=>x.card).map(x=>(x.kind==="insight"?`Insight de ${who(x.by)}: `:"")+(getEdit(x.card.id)??x.card.sentence));
+  const participantes=live()?[...new Set(LIVE.peers.map(p=>p.isMe?(LIVE.names[LIVE.me]||"Você"):(LIVE.names[p.by]||"")).filter(Boolean))]:[];
+  return{
+    semana:[txt("pedidos"),txt("producao"),txt("carteira"),txt("queda")].filter(Boolean),
+    decisoes:os.filter(o=>o.k==="decisao").map(o=>({t:o.t+(o.done?" (concluída)":""),who:o.who,acomp:acompTxt(o)})),
+    pendencias:os.filter(o=>o.k==="pendencia"&&!o.done).map(o=>({t:o.t,who:o.who})),
+    perguntas:os.filter(o=>o.k==="pergunta"&&!o.done).map(o=>({t:o.t,who:o.who})),
+    marcados,comentarios,insights,participantes,
+    pautas:sharedPautas().map(p=>({de:live()?(LIVE.names[p.by]||p.papel||"Alguém"):p.papel,itens:p.itens.filter(i=>!i.done).map(i=>i.t)})).filter(p=>p.itens.length)};
+}
+async function gerarAta(){
+  const btn=document.getElementById("gerar-ata");btn.disabled=true;btn.textContent="Gerando ata…";
+  const m=materialDaReuniao();
+  let resumo=m.semana.slice(0,3).join(" "),destaques=[...m.marcados.slice(0,3),...m.comentarios.slice(0,3),...m.insights.slice(0,2)].slice(0,6),fonte="local";
+  try{
+    if(sample&&S.online){
+      setHint("A IA está escrevendo o resumo da reunião…");
+      ctl?.abort();ctl=new AbortController();
+      const r=await sample.json(`${ESTILO}
+Escreva a parte narrativa da ata da reunião semanal da diretoria (POI), semana de 19 a 25 de outubro de 2026. Use SOMENTE o material abaixo; não invente números, nomes nem decisões.
+Responda com um único objeto JSON: {"resumo": "3 a 4 frases: como foi a semana e o que a mesa decidiu", "destaques": ["até 5 frases curtas com os pontos mais discutidos: o que foi marcado, comentado ou trazido como insight"]}
+
+MATERIAL: ${JSON.stringify(m)}`,{modelTier:"quick",signal:ctl.signal,cache:false});
+      if(typeof r?.resumo==="string"&&r.resumo.trim()){resumo=r.resumo.trim();fonte="ia"}
+      if(Array.isArray(r?.destaques)&&r.destaques.length)destaques=r.destaques.map(String).slice(0,5);
+    }
+  }catch(e){if(e?.code==="cancelled"){btn.disabled=false;btn.textContent="Gerar ata da reunião";return}}
+  const ata=plain({at:Date.now(),fonte,resumo,destaques,decisoes:m.decisoes,pendencias:m.pendencias,perguntas:m.perguntas,pautas:m.pautas,participantes:m.participantes});
+  if(live()){ata.by=LIVE.me;await guard(()=>LIVE.db.doc(`${P}/estado/ata`).set(ata));LIVE.ata=ata}else{S.ata=ata;save()}
+  btn.disabled=false;btn.textContent="Gerar ata da reunião";
+  renderAtaBanner();OPEN="__ata";renderDrawer();
+  setHint(live()?"Ata publicada para todos na reunião.":"Ata pronta. Você pode copiar o texto.");
+}
 function renderDrawer(){
   const d=document.getElementById("drawer"),sc=document.getElementById("scrim");
+  if(OPEN==="__ata"){const a=ataAtual();if(a){d.innerHTML=ataHTML(a);d.hidden=false;sc.hidden=false;return}OPEN=null}
   const x=OPEN&&extras().find(e=>e.card?.id===OPEN);const c=OPEN&&findCard(OPEN);
   if(!c){OPEN=null;d.hidden=true;sc.hidden=true;return}
   d.innerHTML=drawerHTML(c,x);d.hidden=false;sc.hidden=false;
@@ -868,7 +976,7 @@ function applyScale(){
 const isEditing=()=>{const a=document.activeElement;return !!a&&(a.isContentEditable||a.tagName==="INPUT"||a.tagName==="TEXTAREA")&&!!a.closest("#drawer,#outs,#mine-pauta")};
 function renderAll(){
   if(isEditing()){LIVE.dirty=true;renderLive();return}
-  LIVE.dirty=false;renderCards();renderExtras();renderOuts();renderMine();renderDrawer();renderLive();renderNet();applyScale();
+  LIVE.dirty=false;renderCards();renderExtras();renderOuts();renderAtaBanner();renderMine();renderDrawer();renderLive();renderNet();applyScale();
 }
 let schedT=0;
 function sched(){
@@ -878,7 +986,7 @@ function sched(){
       const ids=new Set();
       Object.values(LIVE.cards).forEach(c=>{if(c.editBy)ids.add(c.editBy);Object.keys(c.marks||{}).forEach(k=>ids.add(k))});
       LIVE.notes.forEach(n=>ids.add(n.by));LIVE.pautas.forEach(p=>p.by&&ids.add(p.by));LIVE.extras.forEach(x=>ids.add(x.by));LIVE.outs.forEach(o=>o.by&&ids.add(o.by));
-      if(LIVE.foco?.by)ids.add(LIVE.foco.by);LIVE.peers.forEach(p=>p.by&&ids.add(p.by));
+      if(LIVE.foco?.by)ids.add(LIVE.foco.by);if(LIVE.ata?.by)ids.add(LIVE.ata.by);LIVE.peers.forEach(p=>p.by&&ids.add(p.by));
       ids.delete(undefined);ids.delete(null);
       if(ids.size){const ps=await LIVE.user.profiles([...ids]);for(const id of ids){LIVE.names[id]=ps[id]?.name||"";LIVE.avatars[id]=ps[id]?.avatarUrl||""}}
     }
@@ -903,6 +1011,7 @@ async function enterLive(){
     LIVE.db.collection(`${P}/notas`).onSnapshot(s=>{LIVE.notes=s.docs.map(d=>({...d.data(),id:d.id}));sched()},onErr),
     LIVE.db.collection(`${P}/extras`).onSnapshot(s=>{LIVE.extras=s.docs.map(d=>{const x=d.data();return{...x,id:d.id,card:x.card?{...x.card,id:d.id}:null}}).sort((a,b)=>(b.at||0)-(a.at||0));sched()},onErr),
     LIVE.db.collection(`${P}/saidas`).onSnapshot(s=>{LIVE.outs=s.docs.map(d=>({...d.data(),id:d.id})).sort((a,b)=>(a.at||0)-(b.at||0));sched()},onErr),
+    LIVE.db.doc(`${P}/estado/ata`).onSnapshot(d=>{LIVE.ata=d.exists?d.data():null;sched()},onErr),
     LIVE.db.collection(`${P}/pautas`).onSnapshot(s=>{LIVE.pautas=s.docs.map(d=>({...d.data(),id:d.id}));sched()},onErr),
     LIVE.db.doc(`${P}/estado/foco`).onSnapshot(d=>{
       const f=d.exists?d.data():null;const changed=f&&f.at!==LIVE.foco?.at;LIVE.foco=f;sched();
@@ -1065,6 +1174,16 @@ us.addEventListener("change",()=>{S.user=us.value;save();LIVE.room?.presence({pa
 document.getElementById("net-on").addEventListener("click",()=>{if(S.online)return;S.online=true;save();renderNet();if(S.queue.length)runQueue()});
 document.getElementById("net-off").addEventListener("click",()=>{S.online=false;save();renderNet()});
 document.getElementById("scrim").addEventListener("click",closeCard);
+document.getElementById("gerar-ata").addEventListener("click",gerarAta);
+document.getElementById("ata-banner").addEventListener("click",e=>{if(e.target.closest("#abrir-ata")){OPEN="__ata";renderDrawer()}});
+document.getElementById("drawer").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-ata]");if(!b)return;
+  if(b.dataset.ata==="close")closeCard();
+  else if(b.dataset.ata==="regen")gerarAta();
+  else if(b.dataset.ata==="copy"){const t=ataTexto(ataAtual());
+    try{await navigator.clipboard.writeText(t);setHint("Texto da ata copiado.")}
+    catch(err){const r=document.createRange();r.selectNodeContents(document.querySelector("#drawer .ata"));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);setHint("Não consegui copiar automaticamente. O texto está selecionado: use Copiar.")}}
+});
 const minePane=document.querySelector('[data-pane="minha"]');
 minePane.addEventListener("submit",e=>{if(e.target.id!=="pauta-add")return;e.preventDefault();const i=document.getElementById("pauta-in");const t=i.value.trim();if(!t)return;addPauta(t);syncPauta();renderMine();renderOuts();document.getElementById("pauta-in").focus()});
 minePane.addEventListener("click",e=>{
@@ -1116,7 +1235,8 @@ document.addEventListener("focusout",e=>{
 });
 document.getElementById("outs").addEventListener("change",e=>{
   const row=e.target.closest(".item");if(!row)return;const id=row.dataset.out;
-  if(e.target.type==="checkbox")actUpdOut(id,{done:e.target.checked});else if(e.target.tagName==="SELECT")actUpdOut(id,{who:e.target.value});
+  if(e.target.type==="checkbox")actUpdOut(id,{done:e.target.checked});else if(e.target.dataset.f==="ind"){const v=e.target.value;const ind=indOf(v);actUpdOut(id,ind?{ind:v,base:{w:W,v:ind.v(W)}}:{ind:null,base:null});setHint(ind?"A decisão passa a ser conferida nas próximas edições.":"Indicador removido.")}
+  else if(e.target.tagName==="SELECT")actUpdOut(id,{who:e.target.value});
 });
 document.getElementById("outs").addEventListener("submit",async e=>{
   e.preventDefault();const f=e.target.closest("[data-add]");const inp=f.querySelector("input");const t=inp.value.trim();if(!t)return;inp.value="";inp.blur();

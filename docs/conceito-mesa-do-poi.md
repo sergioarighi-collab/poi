@@ -90,6 +90,20 @@ A Minha mesa de cada diretor tem:
 
 No protótipo, troque o papel no menu do topo para ver a página de cada um.
 
+## Decisões acompanhadas e ata automática (versão 6)
+
+**Decisões com indicador:**
+
+- Em Saídas, cada decisão pode acompanhar um indicador, por exemplo "Pedidos · Teutônia, % do previsto". O board guarda o valor do dia da decisão e, nas edições seguintes, mostra o antes e o depois.
+- O cartão **"Decisões em acompanhamento"**, na aba Semana, mostra quantas decisões melhoraram o indicador desde que foram tomadas.
+- Exemplo com dados reais: "Liberar os pedidos travados de Candelária FL10", decidida na semana de 12 a 18, levou o indicador de 49% para 81% do previsto.
+
+**Ata automática:**
+
+- O botão **"Gerar ata da reunião"** monta a ata com resumo da semana, decisões (com responsável e indicador), pendências, perguntas abertas, destaques (cartões marcados, comentários e insights) e pautas compartilhadas.
+- A IA escreve só o resumo e os destaques. Decisões e responsáveis vêm direto do que foi registrado, sem reescrita.
+- Na reunião ao vivo, a ata fica publicada para todos. O botão "Copiar texto" leva a ata para um e-mail. Na versão final, ela será enviada automaticamente.
+
 ## Limites do protótipo
 
 - Anotações e decisões ficam só no navegador de quem usa. Na versão real, elas são compartilhadas entre os diretores, com o que é privado separado do que é da mesa.
