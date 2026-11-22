@@ -118,6 +118,17 @@ As perguntas do briefing ([briefing-design.md](briefing-design.md)) viraram func
 - **Modo apresentação:** ao mostrar a tela, as anotações pessoais e a Minha mesa ficam ocultas.
 - **Mesa desta reunião:** a Controladoria define quem vai e onde senta (Filial 20: três lugares de um lado, dois do outro, Presidência na cabeceira).
 
+## Leveza como regra (versão 8)
+
+**Regra:** nada novo entra na tela principal do diretor. Ele continua vendo frases, números e a barra para perguntar. O resto fica em lugares próprios:
+
+- **Cartão mais limpo:** o selo de conferência virou um ícone ao lado do título (✓ conferido com a base, ⓘ chega por Excel ou e-mail), com a explicação no detalhe. A data de corte só aparece quando é diferente do normal (Pessoas, até quinta).
+- **Perfil da Controladoria:** a Minha mesa dela é a bancada da edição (ordem das peças, incluir e retirar, status de cada peça, mesa da reunião e "Publicar edição"). Os diretores veem só o resultado e a linha "Edição publicada pela Controladoria às…".
+- **Busca:** lupa no topo; procura em cartões, anotações, decisões e ata.
+- **Modo TV:** tela separada para a TV da sala, com um cartão por vez em letra grande. Ao vivo, acompanha quem está mostrando.
+
+**Teste de leveza:** a primeira tela responde "como foi a semana?" em 10 segundos, sem rolar.
+
 ## Limites do protótipo
 
 - Anotações e decisões ficam só no navegador de quem usa. Na versão real, elas são compartilhadas entre os diretores, com o que é privado separado do que é da mesa.

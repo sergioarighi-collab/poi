@@ -138,7 +138,7 @@ Cada peça tem o seu dono, o seu prazo e o seu formato. Tudo converge na terça.
 
 ## As 17 perguntas deixadas para o Design × o protótipo
 
-Legenda: ✅ respondida no protótipo · 🟡 parcialmente · ⬜ ainda não.
+Legenda: ✅ respondida no protótipo · 🟡 parcialmente · ⬜ ainda não. Situação atual: **13 respondidas e 4 parciais** (2, 4, 8 e 16).
 
 **O conteúdo**
 
@@ -150,7 +150,7 @@ Legenda: ✅ respondida no protótipo · 🟡 parcialmente · ⬜ ainda não.
 | 4 | **O mesmo assunto por dois caminhos:** como evitar que a mesa discuta duas versões do mesmo número? | 🟡 | O fluxo da mesa é um só, com o selo "batido com o Clóvis". Falta marcar explicitamente a versão oficial. |
 | 5 | **Volume e margem no ranking:** como mostrar o que vende muito e o que vende bem? | ✅ | O cartão de ranking cruza pares e margem e destaca margem negativa. |
 | 6 | **Mostrar que está conferido:** como transmitir confiança sem mostrar a conferência? | ✅ | Selo "Conferido com a base" em cada cartão; o detalhe diz de onde vem e como foi conferido. |
-| 7 | **Mover e trocar as peças:** como a Controladoria muda a ordem e inclui ou retira peças sem depender de TI? | 🟡 | Cada diretor oculta e fixa cartões. Falta o modo da Controladoria para montar a edição. |
+| 7 | **Mover e trocar as peças:** como a Controladoria muda a ordem e inclui ou retira peças sem depender de TI? | ✅ | Perfil da Controladoria: a Minha mesa dela é a bancada da edição (ordem, incluir e retirar, status de cada peça, publicar). Os diretores veem só o resultado. |
 
 **O uso**
 
@@ -158,7 +158,7 @@ Legenda: ✅ respondida no protótipo · 🟡 parcialmente · ⬜ ainda não.
 |---|---|---|---|
 | 8 | **Do quadro até o detalhe:** como ir do número até o cliente, o pedido ou a linha sem se perder? | 🟡 | O detalhe abre ao lado, sem sair da tela; a IA busca o pedido do cliente. Falta navegação explícita por níveis. |
 | 9 | **Anotação pessoal ou da mesa:** o que é só meu e o que é compartilhado? | ✅ | Cada anotação escolhe "Só eu" (cadeado) ou "Mesa". |
-| 10 | **Reencontrar o que foi falado:** pela data, pelo assunto ou pelo número? | 🟡 | A ata da reunião e as decisões ficam registradas. Falta a busca no histórico. |
+| 10 | **Reencontrar o que foi falado:** pela data, pelo assunto ou pelo número? | ✅ | Busca (lupa no topo) em cartões, anotações, decisões e ata, por palavra, nome, filial ou número. No protótipo há uma semana de histórico. |
 | 11 | **A anotação que vira acompanhamento:** como "ver isso na próxima semana" volta à mesa? | ✅ | "Virar pendência" e decisões com indicador acompanhado. |
 | 12 | **Quando o número muda depois:** como a anotação mostra o valor do momento em que foi escrita? | ✅ | A anotação guarda o valor da época: "anotado quando o número era X · hoje: Y". |
 
@@ -167,10 +167,10 @@ Legenda: ✅ respondida no protótipo · 🟡 parcialmente · ⬜ ainda não.
 | # | Pergunta | Status | Como o protótipo responde |
 |---|---|---|---|
 | 13 | **Acompanhar quem está falando:** seguir deve ser opcional ou automático? | ✅ | "Mostrar a todos" leva a mesa ao cartão; seguir é opcional. |
-| 14 | **Mostrar a todos o que estou vendo:** com e sem TV, quem assume a tela? | 🟡 | Na reunião ao vivo, cada tablet segue quem mostra. Falta um modo TV e a regra de passar a vez. |
+| 14 | **Mostrar a todos o que estou vendo:** com e sem TV, quem assume a tela? | ✅ | Sem TV, cada tablet segue quem mostra. Com TV, o modo TV mostra um cartão por vez em letra grande; ao vivo, a TV acompanha quem tocou por último em "Mostrar a todos" (é assim que a vez passa). |
 | 15 | **O que não vai para a tela:** como separar o que vai para a mesa do que é só de quem mostra? | ✅ | Modo apresentação: ao mostrar, as anotações pessoais e a Minha mesa ficam ocultas. |
 | 16 | **Sem internet:** o que precisa estar com o diretor antes da reunião? | 🟡 | A edição da semana fica no aparelho, e as perguntas entram numa fila. Falta definir o pacote offline da versão real. |
-| 17 | **Quem vai e onde senta:** como a Controladoria monta a mesa de cada reunião? | ✅ | "Mesa desta reunião": seis lugares e a cabeceira, editáveis, com quem está conectado em destaque. |
+| 17 | **Quem vai e onde senta:** como a Controladoria monta a mesa de cada reunião? | ✅ | "Mesa desta reunião", no perfil da Controladoria: seis lugares e a cabeceira, editáveis, com quem está conectado em destaque. |
 
 ## Pontos em aberto
 

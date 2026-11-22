@@ -87,7 +87,8 @@ svg{width:1em;height:1em;flex:none}
 
 /* hero */
 .hero{padding-block:26px 22px}
-.hero h1{font-weight:400;font-size:clamp(1.7rem,3.4vw,2.4rem);line-height:1.1;margin:0 0 20px;letter-spacing:-.01em}
+.hero h1{font-weight:400;font-size:clamp(1.7rem,3.4vw,2.4rem);line-height:1.1;margin:0 0 4px;letter-spacing:-.01em}
+.pubstamp{margin:0 0 18px;font-size:.8rem;color:var(--muted)}
 .herorow{display:flex;flex-wrap:wrap;gap:20px 40px;align-items:flex-end;justify-content:space-between}
 .meters{display:flex;flex-direction:column;gap:10px;flex:1 1 420px;min-width:0;max-width:640px}
 .meter .mlabel{font-size:.8rem;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;gap:10px}
@@ -239,6 +240,7 @@ main{padding-bottom:170px;min-height:100vh}
 .tile.pend{background:transparent;border:1.5px dashed var(--line);box-shadow:none}
 .tile.pend .sentence{color:var(--muted)}
 .cmeta{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.72rem;color:var(--muted)}
+.ci{display:inline-flex;color:var(--muted);opacity:.8}.ci.ok{color:var(--ok)}
 .cmeta .conf,.dmeta .conf{display:inline-flex;gap:4px;align-items:center}
 .cmeta .conf.ok,.dmeta .conf.ok{color:var(--ok)}
 .dmeta{display:flex;flex-direction:column;gap:6px;font-size:.82rem;color:var(--muted);background:var(--track);border-radius:16px;padding:10px 14px}
@@ -263,6 +265,32 @@ main{padding-bottom:170px;min-height:100vh}
 .seat.cab{border-color:var(--bar-bad)}
 .seat.on{border-color:var(--ok);box-shadow:0 0 0 3px var(--ok-soft)}
 @media (max-width:560px){.mesa-grid{grid-template-columns:minmax(0,1fr) 54px minmax(0,1fr)}.tabua{font-size:0}}
+
+.iconly{padding:8px 10px}
+.ed .pecas{list-style:none;margin:6px 0 0;padding:0}
+.peca{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.peca .ord{width:26px;height:26px;border-radius:50%;background:var(--track);display:grid;place-items:center;font-size:.76rem}
+.peca .pinfo{display:flex;flex-direction:column;min-width:0}.peca .pinfo b{font-weight:500;font-size:.9rem}.peca .pinfo span{font-size:.74rem;color:var(--muted)}
+.peca .pbtns{display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.peca .round{width:30px;height:30px;font-size:.85rem}
+.peca.off{opacity:.55}
+.ed #mesa .mesa-grid{max-width:none}
+.resultados{display:flex;flex-direction:column;gap:6px}
+.res{border:0;text-align:left;background:var(--track);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.res .rot{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.res .rt{font-size:.92rem}.res .rc{font-size:.74rem;color:var(--muted)}
+.tv{position:fixed;inset:0;z-index:60;background:var(--dark);color:var(--on-dark);--ink:var(--on-dark);--muted:#A9ADB4;--track:rgba(255,255,255,.14);--bar-ok:#F4F4F4;--line:rgba(255,255,255,.14);
+  display:flex;flex-direction:column;gap:3vh;padding:calc(3vh + env(safe-area-inset-top,0px)) max(5vw,env(safe-area-inset-right,0px)) calc(3vh + env(safe-area-inset-bottom,0px)) max(5vw,env(safe-area-inset-left,0px))}
+.tvtop{display:flex;gap:16px;align-items:center;justify-content:space-between;font-size:1rem;color:var(--muted)}
+.tvtop b{color:var(--yellow)}
+.tvcard{flex:1;display:flex;flex-direction:column;gap:3vh;justify-content:center;min-height:0}
+.tvcard .kicker{font-size:1.1rem}
+.tvs{font-size:clamp(1.6rem,3.4vw,3rem);line-height:1.25;margin:0;max-width:30ch;font-weight:400}
+.tvbody{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:5vw;align-items:end}
+@media (max-width:800px){.tvbody{grid-template-columns:minmax(0,1fr)}}
+.tvbig{font-size:clamp(3rem,8vw,7rem);font-weight:300;line-height:1;letter-spacing:-.02em}.tvbig span{display:block;font-size:1rem;color:var(--muted);letter-spacing:0;margin-top:8px}
+.tv .ev{gap:12px}.tv .bar-row{font-size:1rem;grid-template-columns:150px minmax(0,1fr) 80px}.tv .track{height:16px}.tv .ev .cap{font-size:.9rem}
+.tvnav{display:flex;gap:16px;align-items:center;justify-content:center;color:var(--muted)}
 
 /* drawer */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.28);z-index:50}
@@ -312,6 +340,7 @@ main{padding-bottom:170px;min-height:100vh}
       <button type="button" data-tab="saidas" aria-pressed="false">Saídas da reunião <span class="n" id="n-saidas" hidden></span></button>
     </nav>
     <div class="right">
+      <button type="button" class="pillbtn iconly" id="buscabtn" aria-label="Buscar no histórico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
       <button type="button" class="pillbtn livebtn" id="livebtn">Reunião ao vivo</button>
       <button type="button" class="pillbtn" id="cfgbtn" aria-expanded="false" aria-controls="cfg">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
@@ -320,6 +349,7 @@ main{padding-bottom:170px;min-height:100vh}
       <div class="cfg" id="cfg" hidden>
         <div><label for="user">Papel (define o que a IA pode mostrar)</label><select id="user"></select></div>
         <div><span class="lbl">Conexão</span><div class="seg" role="group" aria-label="Conexão"><button type="button" id="net-on">Online</button><button type="button" id="net-off">Sem internet</button></div></div>
+        <div><span class="lbl">Tela da sala</span><div class="seg"><button type="button" id="tvbtn">Abrir modo TV</button></div></div>
         <div><span class="lbl">Apresentação</span><div class="seg"><button type="button" id="pres-toggle" aria-pressed="false">Estou mostrando minha tela</button></div></div>
         <div><span class="lbl">Simulação: fluxo de caixa</span><div class="seg" role="group" aria-label="Fluxo de caixa"><button type="button" data-peca="0">Aguardando</button><button type="button" data-peca="1">Chegou</button></div></div>
         <div><span class="lbl">Tamanho do texto</span><div class="seg" role="group" aria-label="Tamanho do texto"><button type="button" data-scale="1">A</button><button type="button" data-scale="1.15">A+</button><button type="button" data-scale="1.3">A++</button></div></div>
@@ -338,6 +368,7 @@ main{padding-bottom:170px;min-height:100vh}
 
 <section class="hero wrap" id="hero" aria-label="Resumo">
   <h1>Semana de 19 a 25 de outubro</h1>
+  <p class="pubstamp" id="pubstamp"></p>
   <div class="herorow">
     <div class="meters" id="meters"></div>
     <div class="stats" id="stats"></div>
@@ -350,11 +381,12 @@ main{padding-bottom:170px;min-height:100vh}
       <div><h2 class="hello">Sua mesa, <span id="mine-name"></span></h2><p class="minesub" id="mine-foco"></p></div>
       <div class="stats" id="mine-stats"></div>
     </div>
-    <div class="sechead"><h2>Sua parte na pauta</h2><p>O que você apresenta e o que só você recebe.</p></div>
-    <div class="bento" id="mine-cards"></div>
-    <div class="sechead gap"><h2>Fixados por você</h2><p>Abra qualquer cartão e toque em “Fixar na minha mesa”.</p></div>
-    <div class="bento" id="mine-pins"></div>
-    <div class="cols two gap" id="mine-cols">
+    <div class="cols two" id="edicao" hidden></div>
+    <div class="sechead" data-normal><h2>Sua parte na pauta</h2><p>O que você apresenta e o que só você recebe.</p></div>
+    <div class="bento" id="mine-cards" data-normal></div>
+    <div class="sechead gap" data-normal><h2>Fixados por você</h2><p>Abra qualquer cartão e toque em “Fixar na minha mesa”.</p></div>
+    <div class="bento" id="mine-pins" data-normal></div>
+    <div class="cols two gap" id="mine-cols" data-normal>
       <div class="col" id="mine-pauta"></div>
       <div class="col" id="mine-pend"></div>
     </div>
@@ -382,8 +414,6 @@ main{padding-bottom:170px;min-height:100vh}
   </section>
 
   <section data-pane="saidas" hidden>
-    <div class="sechead"><div><h2>Mesa desta reunião</h2><p>Filial 20. A Controladoria define quem vai e onde senta; integrantes e lugares podem mudar a cada reunião.</p></div></div>
-    <div class="mesa-card" id="mesa"></div>
     <div id="pautas-wrap" hidden>
       <div class="sechead"><h2>Pautas da reunião</h2><p>O que cada diretor escolheu compartilhar antes de terça.</p></div>
       <div class="bento" id="pautas"></div>
@@ -396,6 +426,7 @@ main{padding-bottom:170px;min-height:100vh}
 </main>
 
 <div class="scrim" id="scrim" hidden></div>
+<div class="tv" id="tv" hidden></div>
 <aside class="drawer" id="drawer" hidden aria-label="Detalhe do cartão"></aside>
 
 <div class="dock">
@@ -653,7 +684,7 @@ function acompanhamento(o){
   const bw=o.base?.w??W,bv=o.base?.v??ind.v(bw),agora=ind.v(W);
   return{ind,bw,bv,agora,delta:agora-bv,nova:bw===W};
 }
-const USUARIOS=["Rodrigo","Sr. Roberto","João","Maribel","Clóvis","Luiz","Miran"];
+const USUARIOS=["Rodrigo","Sr. Roberto","João","Maribel","Clóvis","Luiz","Miran","Controladoria"];
 const DIRETORES=["—","Rodrigo","Sr. Roberto","João","Maribel","Clóvis","Luiz","Miran","Controladoria","TI"];
 const SEED={user:"Rodrigo",online:true,queue:[],scale:1,marked:{},edits:{},notes:{},hidden:{},answers:[],follow:true,liveOn:false,
   outs:[
@@ -670,7 +701,7 @@ const setHint=t=>{document.getElementById("hint").textContent=t};
 
 /* ---------- estado compartilhado (reunião ao vivo) ---------- */
 const P="mesa/s2026-10-19";
-const LIVE={pecas:null,mesa:null,ata:null,pautas:[],on:false,ready:false,db:null,room:null,user:null,me:null,cards:{},notes:[],extras:[],outs:[],foco:null,peers:[],names:{},avatars:{},unsubs:[],readonly:false,dirty:false};
+const LIVE={edicao:null,pecas:null,mesa:null,ata:null,pautas:[],on:false,ready:false,db:null,room:null,user:null,me:null,cards:{},notes:[],extras:[],outs:[],foco:null,peers:[],names:{},avatars:{},unsubs:[],readonly:false,dirty:false};
 const live=()=>LIVE.on;
 const getEdit=id=>live()?(LIVE.cards[id]?.edit??null):(S.edits[id]??null);
 const getEditBy=id=>live()?LIVE.cards[id]?.editBy:null;
@@ -706,7 +737,27 @@ function acompCard(){
     big:antigas.length?`${melhor.length}/${antigas.length}`:String(ds.length),bigU:antigas.length?"decisões com o indicador melhor":"decisões acompanhadas",
     chips:[],ev:ds.length?{cap:["Na decisão → agora","traço = valor na decisão"],rows:ds.slice(0,5).map(({o,a})=>({l:o.t,v:a.agora,ref:a.bv,t:a.nova?"info":a.delta>0?"ok":"bad",txt:`${a.bv}→${a.agora}${a.ind.u}`}))}:null};
 }
-const baseAll=()=>[...BASE.filter(c=>c.id!=="mes"),caixaCard(),acompCard()];
+const baseRaw=()=>[...BASE.filter(c=>c.id!=="mes"),caixaCard(),acompCard()];
+const edicao=()=>(live()?LIVE.edicao:S.edicao)||{};
+function baseAll(){const e=edicao(),ord=e.order||[],off=new Set(e.off||[]);const pos=id=>{const i=ord.indexOf(id);return i<0?999:i};
+  return baseRaw().filter(c=>!off.has(c.id)).map((c,i)=>({c,i})).sort((a,b)=>pos(a.c.id)-pos(b.c.id)||a.i-b.i).map(x=>x.c)}
+async function actEdicao(patch){
+  if(live()){const ref=LIVE.db.doc(`${P}/estado/edicao`);return guard(()=>ref.set({...(LIVE.edicao||{}),...patch,by:LIVE.me}))}
+  S.edicao={...(S.edicao||{}),...patch};save();renderAll();
+}
+const ORIGEM={base:"Sistema",rh:"Excel do RH",fin:"Excel do Financeiro",com:"E-mail do Comercial"};
+function edicaoHTML(){
+  const e=edicao(),off=new Set(e.off||[]),ordem=[...baseAll(),...baseRaw().filter(c=>off.has(c.id))];
+  const status=c=>c.conf==="fin"?(pecaRecebida("caixa")?"chegou":"aguardando"):c.conf==="rh"?"chegou na sexta":c.conf?"chegou":"gerado pela mesa";
+  return`<div class="col ed"><div class="colhead"><h3>Edição da semana · 19 a 25 de outubro</h3><button type="button" class="atabtn" id="publicar">${e.publicada?"Publicar de novo":"Publicar edição"}</button></div>
+    <p class="sub">${e.publicada?`Publicada às ${esc(new Date(e.at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}))}. `:"Ainda não publicada. "}Mude a ordem, tire ou inclua peças. Os diretores veem a edição como está aqui.</p>
+    <ol class="pecas">${ordem.map((c,i)=>{const o=off.has(c.id);return`<li class="peca${o?" off":""}"><span class="ord">${o?"–":i+1}</span>
+      <div class="pinfo"><b>${esc(c.kicker.split(" · ")[0])}</b><span>${esc(c.conf?ORIGEM[c.conf]:"Mesa POI")} · ${esc(status(c))}${c.corte==="rh"?" · pessoas até qui":""}</span></div>
+      <div class="pbtns">${o?"":`<button type="button" class="round" data-mv="-1" data-pid="${esc(c.id)}" aria-label="Subir">↑</button><button type="button" class="round" data-mv="1" data-pid="${esc(c.id)}" aria-label="Descer">↓</button>`}
+      ${c.conf==="fin"&&!pecaRecebida("caixa")?`<button type="button" class="levar" data-recebido="caixa">Marcar como recebido</button>`:""}
+      <button type="button" class="levar" data-tg="${esc(c.id)}">${o?"Incluir":"Retirar"}</button></div></li>`}).join("")}</ol></div>
+    <div class="col ed"><div class="colhead"><h3>Mesa desta reunião</h3></div><p class="sub">Filial 20. Quem vai e onde senta; integrantes e lugares podem mudar a cada reunião.</p><div id="mesa"></div></div>`;
+}
 const findCard=id=>baseAll().find(c=>c.id===id)||personalCards().find(c=>c.id===id)||extras().find(x=>x.card?.id===id)?.card;
 
 /* ---------- Minha mesa: o que cada papel apresenta e recebe ---------- */
@@ -717,7 +768,8 @@ const PAPEIS={
   "Maribel":{foco:"Comercial: você apresenta entrada de pedidos e carteira.",le:["pedidos","queda","carteira","ranking"],extra:"carteira"},
   "Clóvis":{foco:"Devoluções, produto pronto e a conferência do caixa com o Financeiro.",le:["caixa"],extra:"devol"},
   "Luiz":{foco:"Acompanhe a semana e fixe o que importa para a sua área.",le:[],extra:null},
-  "Miran":{foco:"Acompanhe a semana e fixe o que importa para a sua área.",le:[],extra:null}};
+  "Miran":{foco:"Acompanhe a semana e fixe o que importa para a sua área.",le:[],extra:null},
+  "Controladoria":{foco:"Você monta a edição da semana: as peças, a ordem, a mesa e a publicação. Os diretores veem só o resultado publicado.",le:[],extra:null}};
 // Estrutura das páginas 3, 5 e 6 do relatório; todos os valores são fictícios
 const DEVOL={"sem":["Sem. ant.","01–04","05–11","12–18","19–25"],"saldoQ":[131579,159716,173794,174595,197540],"saldoV":[6587697,8183540,10099554,8471472,10110467],"entQ":[19335,38217,86175,54996,76138],"saiQ":[28961,2449,58591,75158,40630]}; // FICTÍCIO
 const MP={"consumo":[8971933,27509350,24347502,31882784],"consumo25":[15894139,26054817,23575788,30399838],"disp":168687978,"disp25":162103361}; // FICTÍCIO
@@ -874,14 +926,14 @@ function tileHTML(c,x){
   const foco=live()&&LIVE.foco?.card===id;
   return `<article class="tile${c.id==="queda"||c.dark?" dark":""}${c.id==="pedidos"||c.id==="acomp"?" wide":""}${c.id==="acomp"?" full":""}${c.pend?" pend":""}${x?" extra":""}${mk.length?" marked":""}${foco?" foco":""}" data-id="${esc(id)}" id="c-${esc(id)}" tabindex="0">
     ${foco?`<span class="focotag">${esc(who(LIVE.foco.by))} está mostrando</span>`:""}
-    <div class="thead"><span class="kicker"><span class="tone ${esc(c.tone||"info")}"></span>${esc(kickerOf(c,x))}${c.excl?' <span class="excl">Só para você</span>':""}</span><button type="button" class="round" data-act="open" aria-label="Abrir detalhe">${IC.open}</button></div>
+    <div class="thead"><span class="kicker"><span class="tone ${esc(c.tone||"info")}"></span>${esc(kickerOf(c,x))}${c.conf?`<span class="ci${CONF[c.conf].ok?" ok":""}" title="${esc(CONF[c.conf].c)}" aria-label="${esc(CONF[c.conf].c)}">${CONF[c.conf].ok?IC.check:IC.info}</span>`:""}${c.excl?' <span class="excl">Só para você</span>':""}</span><button type="button" class="round" data-act="open" aria-label="Abrir detalhe">${IC.open}</button></div>
     ${x&&askedOf(x)?`<div class="asked">${esc(askedOf(x))}</div>`:""}
     <p class="sentence">${esc(ed??c.sentence)}</p>
     <div class="tbody">
       ${c.big?`<div class="big"><span class="n">${esc(c.big)}</span><span class="u">${esc(c.bigU||"")}</span></div>`:""}
       ${evHTML(c.ev&&{...c.ev,rows:c.ev.rows.slice(0,5)})}
     </div>
-    ${c.corte||c.conf?`<div class="cmeta">${c.corte?`<span>${esc(CORTES[c.corte])}</span>`:""}${c.conf?`<span class="conf${CONF[c.conf].ok?" ok":""}">${CONF[c.conf].ok?IC.check:IC.info}${esc(CONF[c.conf].c)}</span>`:""}</div>`:""}
+    ${c.corte==="rh"?`<div class="cmeta"><span>${esc(CORTES.rh)}</span></div>`:""}
     <div class="tfoot">
       ${(c.chips||[]).slice(0,2).map(([t,k])=>`<span class="chip ${esc(k)}">${esc(t)}</span>`).join("")}
       <span class="spacer"></span>
@@ -955,8 +1007,9 @@ function renderMesa(){
   const m=mesaAtual(),online=new Set(live()?LIVE.peers.map(p=>typeof p.presence?.papel==="string"?p.presence.papel:"").filter(Boolean):[]);
   const seat=(k,lado)=>{const v=m[k]||"—";return`<label class="seat${k==="cab"?" cab":""}${online.has(v)?" on":""}"><span class="lado">${k==="cab"?"Presidência · cabeceira":esc(lado)}${online.has(v)?" · na reunião":""}</span>
     <select data-seat="${k}" aria-label="Quem senta: ${esc(lado)}">${DIRETORES.map(d=>`<option ${d===v?"selected":""}>${esc(d)}</option>`).join("")}</select></label>`};
-  const sentados=new Set(Object.values(m)),fora=USUARIOS.filter(u=>!sentados.has(u));
-  document.getElementById("mesa").innerHTML=`<div class="mesa-grid">
+  const sentados=new Set(Object.values(m)),fora=USUARIOS.filter(u=>u!=="Controladoria"&&!sentados.has(u));
+  const el=document.getElementById("mesa");if(!el)return;
+  el.innerHTML=`<div class="mesa-grid">
       <div class="lado-col">${LUGARES.filter(([k])=>k[0]==="e").map(([k,l])=>seat(k,l)).join("")}</div>
       <div class="tabua">Mesa</div>
       <div class="lado-col">${LUGARES.filter(([k])=>k[0]==="d").map(([k,l])=>seat(k,l)).join("")}</div>
@@ -965,7 +1018,6 @@ function renderMesa(){
     <p class="meta2">${fora.length?`Fora da mesa nesta reunião: ${esc(fora.join(", "))}.`:"Todos os diretores estão na mesa."}${live()?" Quem está conectado aparece em verde.":""}</p>`;
 }
 function renderOuts(){
-  renderMesa();
   const list=outs();
   document.getElementById("outs").innerHTML=KINDS.map(([k,label])=>{
     const items=list.filter(o=>o.k===k);
@@ -987,6 +1039,12 @@ function renderOuts(){
   const open=list.filter(o=>!o.done).length,n=document.getElementById("n-saidas");n.hidden=!open;n.textContent=open;
 }
 function renderMine(){
+  const isCtrl=S.user==="Controladoria";
+  document.querySelectorAll('[data-pane="minha"] [data-normal]').forEach(el=>el.hidden=isCtrl);
+  const ed=document.getElementById("edicao");ed.hidden=!isCtrl;
+  if(isCtrl){document.getElementById("mine-name").textContent="Controladoria";document.getElementById("mine-foco").textContent=PAPEIS.Controladoria.foco;
+    document.getElementById("mine-stats").innerHTML="";ed.innerHTML=edicaoHTML();renderMesa();
+    const n=document.getElementById("n-minha");n.hidden=pecaRecebida("caixa");n.textContent="1";return}
   const papel=PAPEIS[S.user]||{foco:"",le:[]},m=meu();
   document.getElementById("mine-name").textContent=S.user;
   document.getElementById("mine-foco").textContent=papel.foco;
@@ -1078,8 +1136,34 @@ MATERIAL: ${JSON.stringify(m)}`,{modelTier:"quick",signal:ctl.signal,cache:false
   renderAtaBanner();OPEN="__ata";renderDrawer();
   setHint(live()?"Ata publicada para todos na reunião.":"Ata pronta. Você pode copiar o texto.");
 }
+let BUSCA={q:"",f:"tudo"};
+function buscaItens(){
+  const it=[];const sem="Semana de 19 a 25/10";
+  for(const c of baseAll())it.push({tipo:"cartoes",rot:"Cartão",t:getEdit(c.id)??c.sentence,ctx:`${c.kicker} · ${sem}`,go:{card:c.id}});
+  for(const x of extras())if(x.card)it.push({tipo:"cartoes",rot:x.kind==="insight"?"Insight":"Resposta da IA",t:getEdit(x.card.id)??x.card.sentence,ctx:`${x.q||x.card.kicker} · ${sem}`,go:{card:x.card.id}});
+  for(const c of [...baseAll(),...extras().map(x=>x.card).filter(Boolean)])for(const n of notesOf(c.id))it.push({tipo:"anotacoes",rot:n.priv?"Anotação pessoal":"Anotação da mesa",t:n.t,ctx:`${n.priv?"Só você":who(n.by)} · ${c.kicker}${n.snap?` · valor na época: ${n.snap}`:""}`,go:{card:c.id}});
+  for(const o of outs())it.push({tipo:"decisoes",rot:({decisao:"Decisão",pendencia:"Pendência",pergunta:"Pergunta"})[o.k],t:o.t,ctx:`${o.who&&o.who!=="—"?o.who+" · ":""}${o.from||sem}${o.done?" · concluída":""}`,go:{tab:"saidas"}});
+  const a=ataAtual();if(a)it.push({tipo:"decisoes",rot:"Ata",t:a.resumo,ctx:`Ata da reunião · ${sem}`,go:{ata:1}});
+  return it;
+}
+function buscaResultados(){
+  const norm2=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+  const q=norm2(BUSCA.q).trim(),f=BUSCA.f;
+  const res=buscaItens().filter(i=>(f==="tudo"||i.tipo===f)&&(!q||norm2(i.t+" "+i.ctx).includes(q)));
+  if(!res.length)return`<p class="meta2">${q?"Nada encontrado. Tente outra palavra, um nome ou um número.":"Nada registrado ainda."}</p>`;
+  return res.slice(0,40).map((r,i)=>`<button type="button" class="res" data-res="${i}"><span class="rot">${esc(r.rot)}</span><span class="rt">${esc(r.t)}</span><span class="rc">${esc(r.ctx)}</span></button>`).join("");
+}
+let BUSCA_LISTA=[];
+function buscaHTML(){
+  return`<div style="display:contents"><div class="thead"><span class="kicker">Buscar no que foi falado e decidido</span><button type="button" class="round" data-busca="close" aria-label="Fechar">${IC.close}</button></div>
+    <div class="add"><input type="search" id="busca-in" placeholder="Palavra, nome, filial ou número" value="${esc(BUSCA.q)}"></div>
+    <div class="vis" role="group" aria-label="Filtrar">${[["tudo","Tudo"],["cartoes","Cartões"],["anotacoes","Anotações"],["decisoes","Decisões e ata"]].map(([k,l])=>`<button type="button" data-bf="${k}" aria-pressed="${BUSCA.f===k}">${l}</button>`).join("")}</div>
+    <div class="resultados" id="busca-res">${buscaResultados()}</div>
+    <p class="meta2">No protótipo há uma semana de histórico. Na versão real, a busca cobre todas as reuniões, por data, assunto ou número.</p></div>`;
+}
 function renderDrawer(){
   const d=document.getElementById("drawer"),sc=document.getElementById("scrim");
+  if(OPEN==="__busca"){BUSCA_LISTA=null;d.innerHTML=buscaHTML();d.hidden=false;sc.hidden=false;return}
   if(OPEN==="__ata"){const a=ataAtual();if(a){d.innerHTML=ataHTML(a);d.hidden=false;sc.hidden=false;return}OPEN=null}
   const x=OPEN&&extras().find(e=>e.card?.id===OPEN);const c=OPEN&&findCard(OPEN);
   if(!c){OPEN=null;d.hidden=true;sc.hidden=true;return}
@@ -1102,6 +1186,20 @@ function renderLive(){
   document.getElementById("livestate").textContent=LIVE.ready?"Ao vivo":"Conectando…";
   document.getElementById("follow").checked=!!S.follow;
 }
+let TVI=0;
+function renderTV(){
+  const el=document.getElementById("tv");if(el.hidden)return;
+  const list=baseAll().filter(c=>!c.pend);
+  let c=list[((TVI%list.length)+list.length)%list.length],quem="";
+  if(live()&&LIVE.foco){const f=findCard(LIVE.foco.card);if(f){c=f;quem=who(LIVE.foco.by)}}
+  const ev=c.ev?evHTML(c.ev):"";
+  el.innerHTML=`<div class="tvtop"><span>POI · semana de 19 a 25 de outubro</span><span>${quem?`Mostrando: <b>${esc(quem)}</b>`:live()?"Ninguém está mostrando: navegue pelas setas":"Use as setas para passar"}</span><button type="button" class="round" id="tvclose" aria-label="Fechar modo TV">${IC.close}</button></div>
+    <div class="tvcard"><div class="kicker"><span class="tone ${esc(c.tone||"info")}"></span>${esc(c.kicker)}</div>
+      <p class="tvs">${esc(getEdit(c.id)??c.sentence)}</p>
+      <div class="tvbody">${c.big?`<div class="tvbig">${esc(c.big)}<span>${esc(c.bigU||"")}</span></div>`:""}${ev}</div></div>
+    <div class="tvnav"><button type="button" class="round" id="tvprev" aria-label="Anterior">←</button><span>${list.indexOf(c)+1} de ${list.length}</span><button type="button" class="round" id="tvnext" aria-label="Próximo">→</button></div>`;
+}
+function renderPub(){const e=edicao();document.getElementById("pubstamp").textContent=e.publicada?`Edição publicada pela Controladoria às ${new Date(e.at).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}`:"Edição em montagem pela Controladoria"}
 function renderPresenting(){
   const on=presenting();
   document.querySelector('[data-tab="minha"]').hidden=on;
@@ -1124,7 +1222,7 @@ function applyScale(){
 const isEditing=()=>{const a=document.activeElement;return !!a&&(a.isContentEditable||a.tagName==="INPUT"||a.tagName==="TEXTAREA")&&!!a.closest("#drawer,#outs,#mine-pauta")};
 function renderAll(){
   if(isEditing()){LIVE.dirty=true;renderLive();return}
-  LIVE.dirty=false;renderPresenting();renderCards();renderExtras();renderOuts();renderAtaBanner();renderMine();renderDrawer();renderLive();renderNet();applyScale();
+  LIVE.dirty=false;renderTV();renderPub();renderPresenting();renderCards();renderExtras();renderOuts();renderAtaBanner();renderMine();renderDrawer();renderLive();renderNet();applyScale();
 }
 let schedT=0;
 function sched(){
@@ -1162,6 +1260,7 @@ async function enterLive(){
     LIVE.db.doc(`${P}/estado/ata`).onSnapshot(d=>{LIVE.ata=d.exists?d.data():null;sched()},onErr),
     LIVE.db.doc(`${P}/estado/pecas`).onSnapshot(d=>{const before=!!LIVE.pecas?.caixa;LIVE.pecas=d.exists?d.data():null;if(!before&&LIVE.pecas?.caixa&&LIVE.ready)setHint("O fluxo de caixa chegou. O cartão já está atualizado para todos.");sched()},onErr),
     LIVE.db.doc(`${P}/estado/mesa`).onSnapshot(d=>{LIVE.mesa=d.exists?d.data():null;sched()},onErr),
+    LIVE.db.doc(`${P}/estado/edicao`).onSnapshot(d=>{LIVE.edicao=d.exists?d.data():null;sched()},onErr),
     LIVE.db.collection(`${P}/pautas`).onSnapshot(s=>{LIVE.pautas=s.docs.map(d=>({...d.data(),id:d.id}));sched()},onErr),
     LIVE.db.doc(`${P}/estado/foco`).onSnapshot(d=>{
       const f=d.exists?d.data():null;const changed=f&&f.at!==LIVE.foco?.at;LIVE.foco=f;sched();
@@ -1324,11 +1423,35 @@ us.addEventListener("change",()=>{S.user=us.value;save();LIVE.room?.presence({pa
 document.getElementById("net-on").addEventListener("click",()=>{if(S.online)return;S.online=true;save();renderNet();if(S.queue.length)runQueue()});
 document.getElementById("net-off").addEventListener("click",()=>{S.online=false;save();renderNet()});
 document.getElementById("scrim").addEventListener("click",closeCard);
+document.getElementById("buscabtn").addEventListener("click",()=>{OPEN="__busca";renderDrawer();setTimeout(()=>document.getElementById("busca-in")?.focus(),30)});
+document.getElementById("drawer").addEventListener("input",e=>{if(e.target.id!=="busca-in")return;BUSCA.q=e.target.value;document.getElementById("busca-res").innerHTML=buscaResultados()});
+document.getElementById("drawer").addEventListener("click",e=>{
+  if(e.target.closest('[data-busca="close"]')){closeCard();return}
+  const bf=e.target.closest("[data-bf]");if(bf){BUSCA.f=bf.dataset.bf;renderDrawer();return}
+  const r=e.target.closest("[data-res]");if(r){
+    const norm2=t=>String(t||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();const q=norm2(BUSCA.q).trim();
+    const lista=buscaItens().filter(i=>(BUSCA.f==="tudo"||i.tipo===BUSCA.f)&&(!q||norm2(i.t+" "+i.ctx).includes(q)));const g=lista[+r.dataset.res]?.go;if(!g)return;
+    if(g.card){const isBase=baseAll().some(c=>c.id===g.card);setTab(isBase?"semana":"insights");openCard(g.card)}
+    else if(g.tab){closeCard();setTab(g.tab)}else if(g.ata){OPEN="__ata";renderDrawer()}}
+});
+document.getElementById("tvbtn").addEventListener("click",()=>{const t=document.getElementById("tv");t.hidden=false;document.getElementById("cfg").hidden=true;renderTV();try{t.requestFullscreen?.().catch(()=>{})}catch(e){}});
+document.getElementById("tv").addEventListener("click",e=>{
+  if(e.target.closest("#tvclose")){document.getElementById("tv").hidden=true;try{document.fullscreenElement&&document.exitFullscreen()}catch(err){}return}
+  if(e.target.closest("#tvprev")){TVI--;renderTV()}if(e.target.closest("#tvnext")){TVI++;renderTV()}
+});
+document.addEventListener("keydown",e=>{const t=document.getElementById("tv");if(t.hidden)return;if(e.key==="ArrowRight"){TVI++;renderTV()}if(e.key==="ArrowLeft"){TVI--;renderTV()}if(e.key==="Escape"){t.hidden=true;try{document.fullscreenElement&&document.exitFullscreen()}catch(err){}}});
+document.querySelector('[data-pane="minha"]').addEventListener("click",e=>{
+  const mv=e.target.closest("[data-mv]");const tg=e.target.closest("[data-tg]");const rc=e.target.closest("[data-recebido]");
+  if(e.target.closest("#publicar")){actEdicao({publicada:true,at:Date.now(),order:baseAll().map(c=>c.id)});setHint("Edição publicada: os diretores já veem esta versão.");return}
+  if(rc){actPeca(rc.dataset.recebido,true);return}
+  if(mv){const ids=baseAll().map(c=>c.id),i=ids.indexOf(mv.dataset.pid),j=i+(+mv.dataset.mv);if(j<0||j>=ids.length)return;[ids[i],ids[j]]=[ids[j],ids[i]];actEdicao({order:ids});return}
+  if(tg){const off=new Set(edicao().off||[]);off.has(tg.dataset.tg)?off.delete(tg.dataset.tg):off.add(tg.dataset.tg);actEdicao({off:[...off]})}
+});
 document.getElementById("drawer").addEventListener("click",e=>{const v=e.target.closest("[data-vis]");if(!v)return;NOTEVIS=v.dataset.vis;const inp=document.getElementById("note-in"),keep=inp?.value||"";renderDrawer();const n=document.getElementById("note-in");if(n){n.value=keep;n.focus()}});
 document.getElementById("pres-toggle").addEventListener("click",()=>{S.presenting=!S.presenting;save();renderAll();setHint(S.presenting?"Modo apresentação: suas anotações pessoais e a Minha mesa estão ocultas.":"Modo apresentação desligado.")});
 document.getElementById("pres-off").addEventListener("click",()=>{S.presenting=false;save();renderAll();setHint("Modo apresentação desligado.")});
 document.querySelectorAll("[data-peca]").forEach(b=>b.addEventListener("click",()=>actPeca("caixa",b.dataset.peca==="1")));
-document.getElementById("mesa").addEventListener("change",e=>{const s=e.target.closest("[data-seat]");if(s)actMesa(s.dataset.seat,s.value)});
+document.querySelector('[data-pane="minha"]').addEventListener("change",e=>{const s=e.target.closest("[data-seat]");if(s)actMesa(s.dataset.seat,s.value)});
 document.getElementById("gerar-ata").addEventListener("click",gerarAta);
 document.getElementById("ata-banner").addEventListener("click",e=>{if(e.target.closest("#abrir-ata")){OPEN="__ata";renderDrawer()}});
 document.getElementById("drawer").addEventListener("click",async e=>{
