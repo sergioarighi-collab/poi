@@ -2,7 +2,7 @@
 
 Fonte: capturas das páginas 2 a 6 do relatório `POI - GER5003`, edição de **10/2026**, emitida em 26/10/2026 às 04:08 e gerada pela TI. Faltam a página 1 (faturamento) e a página 7 (comparativo do mês).
 
-> Os números citados servem só para entender a estrutura e ilustrar a proposta. As imagens originais **não** foram versionadas.
+> Este documento descreve só a **estrutura** do relatório. Os valores são confidenciais e não ficam no repositório; as imagens originais também não foram versionadas.
 
 ## Padrão visual comum
 
@@ -63,18 +63,9 @@ Se o layout for gerado a partir desse modelo, uma filial ou abertura nova vira *
 - Comparar com 2025 por semana mistura calendários diferentes (dias úteis diferentes). Faz mais sentido comparar por dia útil ou pelo acumulado.
 - O mesmo número aparece repetido em páginas diferentes: o total de pedidos por filial e por marca é idêntico.
 
-**O "Realizado" do total do mês não é só realizado.** Nas páginas de pedidos e de produção, a coluna "Realizado" do **Total do mês** soma o realizado das semanas que já passaram **com o previsto da semana que ainda não aconteceu** (26–31). Em pedidos: R$ 362,8 mi realizados + R$ 105,0 mi previstos = os R$ 467,8 mi impressos. Na prática é uma projeção com rótulo de realizado.
+**O "Realizado" do total do mês não é só realizado.** Nas páginas de pedidos e de produção, a coluna "Realizado" do **Total do mês** soma o realizado das semanas que já passaram **com o previsto da semana que ainda não aconteceu** (26–31). Na prática é uma projeção com rótulo de realizado. Conferimos isso somando as semanas: a diferença é exatamente o previsto da semana 26–31.
 
-**A história que a grade não conta.** Exemplo com os dados de outubro até o dia 25, só com o que já aconteceu:
-
-| Indicador | Realizado até 25/10 | % do previsto | vs mesmo período de 2025 |
-|---|---|---|---|
-| Entrada de pedidos (valor) | R$ 362,8 mi | **69%** | **−22%** |
-| Entrada de pedidos (pares) | 7,22 mi | 67% | **−23%** |
-| Produção (pares) | 8,60 mi | 99% | +1% |
-| Carteira atual (pares) | 15,45 mi | — | **−15%** (contra out/2025) |
-
-Leitura possível: a fábrica está entregando o plano, mas a entrada de pedidos caiu cerca de 22% contra o ano passado, e a carteira está encolhendo. Hoje essa conclusão exige cruzar três páginas com a régua. Numa versão digital, ela seria a **primeira frase** da tela.
+**A história que a grade não conta.** Cruzando as páginas de pedidos, produção e carteira (só com o que já aconteceu no mês), aparece uma leitura que nenhuma página mostra sozinha: a fábrica entregando o plano enquanto a entrada de pedidos fica bem abaixo do ano anterior e a carteira encolhe. Hoje essa conclusão exige cruzar três páginas com a régua. Numa versão digital, ela seria a **primeira frase** da tela.
 
 ## Perguntas novas
 

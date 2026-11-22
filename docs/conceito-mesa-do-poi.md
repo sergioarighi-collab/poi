@@ -1,5 +1,7 @@
 # Conceito: Mesa do POI
 
+> Todos os números do protótipo são **fictícios**, na mesma estrutura do relatório do POI. Os dados reais da empresa não ficam no protótipo nem no repositório.
+
 > Protótipo navegável: https://claude.ai/artifact/7EF9MUmoHhztHvHTLC6m3A (privado; compartilhe pelo menu Share)
 
 ## A ideia
@@ -12,7 +14,7 @@ Digitalizar as tabelas só muda o problema de lugar: a diretoria continuaria len
 | Pergunta sem resposta ("o pedido X faturou?") | **Pergunta à IA na hora**, falando ou escrevendo. A resposta vira um cartão na mesa |
 | Anotação no papel, perdida na semana seguinte | **Marcar, anotar e editar** a própria frase. Tudo fica guardado |
 | A reunião termina sem registro | **Saídas da reunião**: decisões, pendências e perguntas abertas, cada uma com um responsável. O que fica aberto volta na semana seguinte |
-| Promessas ditas na mesa se perdem | **"Promessa da semana passada"**: a Mesa confere o que foi dito contra o que aconteceu (ex.: Candelária FL10, de 49% para 81% do previsto) |
+| Promessas ditas na mesa se perdem | **"Promessa da semana passada"**: a Mesa confere o que foi dito contra o que aconteceu (ex.: uma filial que ia recuperar com pedidos a liberar: recuperou ou não?) |
 | Mudança de layout pedida na segunda de manhã | Pedir à IA ("separa bolsas de produção e revenda") em vez de abrir manutenção de report |
 
 ## Princípios
@@ -25,7 +27,7 @@ Digitalizar as tabelas só muda o problema de lugar: a diretoria continuaria len
 
 ## O que o protótipo já faz
 
-- 6 cartões gerados a partir dos dados reais do GER5003 (pedidos, onde está a queda, produção, carteira, promessa da semana passada, mês até o dia 25).
+- 6 cartões gerados a partir de dados fictícios, na estrutura do GER5003 (pedidos, onde está a queda, produção, carteira, promessa da semana passada, mês até o dia 25).
 - Frase editável (toque e reescreva), com opção de voltar ao original.
 - Marcar, anotar, "Por quê?" (pede à IA a explicação) e "Virar pendência".
 - Barra de pergunta com ditado por voz. A IA responde com um cartão no mesmo formato ou registra itens ("anota que…").
@@ -55,9 +57,9 @@ Código do protótipo: [`prototipos/mesa-poi.html`](../prototipos/mesa-poi.html)
 
 **Insights:**
 
-- **A IA procura novos insights:** a IA consulta pedidos, produção e carteira e procura cruzamentos que a tabela esconde. Exemplos com os dados reais:
-  - o previsto desta semana é 30% menor que o da anterior, então os 87% "parecem melhores do que são";
-  - Teutônia produz no plano, mas os pedidos e a carteira despencaram.
+- **A IA procura novos insights:** a IA consulta pedidos, produção e carteira e procura cruzamentos que a tabela esconde. Exemplos (com dados fictícios):
+  - o previsto desta semana é bem menor que o da anterior, então o "% do previsto" parece melhor do que é;
+  - uma filial produz no plano, mas os pedidos e a carteira despencaram.
 - **Meu insight:** cada diretor publica a própria leitura como um cartão. Os outros podem marcar e comentar.
 
 **Para testar com outra pessoa:** compartilhe o artifact pelo menu Share. A pessoa precisa de permissão para usar (Contributor ou acima) para escrever na mesa.
@@ -78,9 +80,9 @@ A Minha mesa de cada diretor tem:
   - Maribel: pedidos e carteira.
   - João: produção e a promessa da semana anterior.
 - **Um cartão exclusivo:**
-  - Clóvis: devoluções em transportadora (dado real do GER5003).
-  - João: matéria-prima (dado real).
-  - Maribel: carteira por mês de entrega (dado real).
+  - Clóvis: devoluções em transportadora.
+  - João: matéria-prima.
+  - Maribel: carteira por mês de entrega.
   - Sr. Roberto: fluxo de caixa detalhado (fictício).
   - Rodrigo: o que está aberto na mesa, por responsável.
 - **Fixados por você:** qualquer cartão da semana ou insight que ele queira acompanhar.
@@ -96,7 +98,7 @@ No protótipo, troque o papel no menu do topo para ver a página de cada um.
 
 - Em Saídas, cada decisão pode acompanhar um indicador, por exemplo "Pedidos · Teutônia, % do previsto". O board guarda o valor do dia da decisão e, nas edições seguintes, mostra o antes e o depois.
 - O cartão **"Decisões em acompanhamento"**, na aba Semana, mostra quantas decisões melhoraram o indicador desde que foram tomadas.
-- Exemplo com dados reais: "Liberar os pedidos travados de Candelária FL10", decidida na semana de 12 a 18, levou o indicador de 49% para 81% do previsto.
+- Exemplo no protótipo (dados fictícios): "Liberar os pedidos travados de Candelária FL10", decidida na semana de 12 a 18, mostra o indicador antes e depois.
 
 **Ata automática:**
 

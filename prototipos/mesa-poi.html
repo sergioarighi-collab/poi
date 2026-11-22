@@ -323,7 +323,7 @@ main{padding-bottom:170px;min-height:100vh}
     <div class="sechead"><h2>O que mudou na semana</h2><p>Toque num cartão para ver o detalhe, corrigir a frase ou comentar.</p></div>
     <div class="bento" id="cards"></div>
     <p class="foot" id="hiddenrow"></p>
-    <p class="foot">Protótipo de conceito com os dados reais do GER5003 (emitido em 26/10/2026, semanas até o dia 25). Pedidos de clientes e fluxo de caixa são fictícios, só para simular as consultas. Fora da reunião ao vivo, marcações e anotações ficam só neste aparelho.</p>
+    <p class="foot">Protótipo de conceito com <b>dados fictícios</b>, na mesma estrutura do relatório do POI. Nenhum número representa a empresa. Fora da reunião ao vivo, marcações e anotações ficam só neste aparelho.</p>
   </section>
 
   <section data-pane="insights" hidden>
@@ -370,25 +370,13 @@ main{padding-bottom:170px;min-height:100vh}
   </div>
 </div>
 <script>
-/* ---------- Dados do GER5003 (10/2026) ---------- */
+/* ---------- Dados FICTÍCIOS na estrutura do relatório do POI ---------- */
 const FIL=[["FL01","Igrejinha"],["FL03","Osório"],["FL06","Mato Leitão"],["FL08","Teutônia"],["FL10","Candelária 10"],["FL11","Candelária 11"],["FL12","Roca Sales"],["FL16","Novo Hamburgo"],["FL18","Santa Clara"],["FL23","Sapiranga 23"],["FL30","Sapiranga 30"]];
 const SEM=["01–04","05–11","12–18","19–25"];
 // [previsto[], realizado[], 2025[]] por semana, na ordem de FIL (FL17 sem movimento, omitida)
-const PED=[ // entrada de pedidos, valor R$
- [[9753117,7601135,6861389,8366654,7128443,4685026,8432413,4869976,12504510,14984240,8581943],[5255115,3098417,4182533,4104369,1820083,1686928,4136188,1448273,7098570,6942745,2605111],[5576337,2932324,3505968,4804192,3900587,1910138,5005574,1857998,7230119,7920202,3045986]],
- [[16132966,12573299,11349660,13839570,11791403,7749664,13948344,8055594,20684139,24785946,14195687],[14418142,9178963,10495162,10899510,7367538,6195474,11491149,4677058,15483853,22247179,9527178],[15679086,9393113,9314580,13713338,11458405,6171998,13843745,5547682,17366306,22510337,10325196]],
- [[17002857,13251253,11961635,14585802,12427197,8167525,14700441,8489953,21799431,26122407,14961120],[11248100,7057059,8190016,11588379,6119152,3646825,8726070,3422319,11171118,17321531,10408037],[10016554,8551818,7872404,11407326,14904761,5233629,9254826,4854477,17032316,23713669,7555287]],
- [[11918095,9288421,8384467,10223868,8710801,5724999,10304224,5951004,15280237,18310412,10486946],[8661133,7186524,6976215,10446368,7024056,6003124,7052720,5687293,11669344,19756619,9056605],[14770023,9923725,6993188,21756876,9167835,5494027,8336430,22737007,14413122,26307462,21322959]]];
-const PROD=[ // produção, pares
- [[98480,82600,69880,111602,82000,61000,71680,85256,107760,184202,99200],[96819,80406,67627,111314,75000,60449,69945,92649,109817,181294,101533],[135084,123028,90025,179629,126007,78934,102132,107372,152476,280971,141579]],
- [[239000,207600,175100,334803,205000,158500,185100,190018,278250,460500,245000],[227411,199726,180792,314033,200017,146191,178576,196169,277821,468588,245294],[216567,196791,146798,282690,209931,129358,170358,178921,257644,464869,239064]],
- [[193225,199800,146910,223216,173507,126811,155012,152035,278250,404124,220708],[181822,195418,152934,270149,160008,124552,150496,159213,270616,407361,221732],[175843,146007,130351,227772,170025,106121,137989,141351,206477,369589,188174]],
- [[254455,193000,178800,281400,205000,158500,186500,191010,277500,466000,253550],[237380,194310,195471,278525,200002,152261,180139,190563,273966,477706,246859],[220821,178508,151036,283160,210025,130213,173002,182846,259064,475912,235056]]];
-const CART={ // carteira de pedidos: posição atual × mesmo momento de 2025
- qAtual:[1594323,1137199,1061500,1553151,1166311,952896,1230886,965414,1417177,3073274,1293961],
- vAtual:[96292152,62139539,60713835,66887165,60232080,40385494,79592960,34501787,90145505,138630826,66924883],
- qAnt:[1668877,1154303,1084693,2065041,1653315,951289,1275571,1422796,1843115,3460305,1603879],
- vAnt:[103972656,57776533,60170346,88684472,92489387,39785426,79053129,53848601,116761691,155978345,75564072]};
+const PED=[[[6510649,5167468,4635078,5426916,4842705,2882473,5437761,3148821,7363995,9167231,5186628],[4263227,2320530,3350211,2969424,1357238,1173974,2676504,1132110,4390964,5033227,1723502],[2969332,1735809,2011011,2541403,2182072,1187959,2720395,1036775,3928742,4982720,1837664]],[[9583067,8501398,7138906,8647924,7293374,5257524,8198044,4739666,13743011,14703707,9456268],[9573568,7015241,7647704,8221769,5106533,4578617,8038288,3303250,11479252,15341853,6600227],[9982172,5422820,5556838,7448943,6466592,3276925,8580439,3496482,9617814,13288980,6072999]],[[11159026,7936561,8029401,8781279,7666313,5538942,8952984,5523005,13374581,17442378,9458419],[8118348,4844732,5827749,8063366,4464839,2873528,5439925,2613172,8266582,12655043,7860587],[5534451,4835158,5087562,7311164,8810286,2856786,5382459,2789274,9108064,13129631,4419064]],[[6962054,5485954,5523735,6220314,5913553,3430595,6963311,3714895,10163850,11306218,6257002],[5200184,4257840,4703437,6729290,5364757,3703984,5412411,3828675,8094111,12959809,6270922],[7776906,5180942,4222340,13824764,4786022,3313716,5001300,13468242,8917652,16254152,12896885]]]; // FICTÍCIO: [previsto, realizado, ano anterior] por semana
+const PROD=[[[69462,56931,51108,82889,57045,44640,51944,59057,79821,129378,68530],[64837,53963,47577,80114,49996,41921,48605,60872,76287,122226,66619],[104660,93477,70215,124720,95842,59119,76781,85568,111310,216540,97703]],[[166151,144161,120206,226704,149923,107261,135164,131509,192514,316667,171720],[150427,133773,116100,198034,141069,92356,122223,128969,184383,301427,165925],[148021,135705,101889,216991,153530,92864,120969,122773,175739,340503,190185]],[[133125,146398,108084,163925,123193,90863,107063,105049,200042,288190,151571],[118468,133393,109852,190990,106755,83743,98327,103815,185192,272696,146857],[120151,102337,96577,173595,121461,84065,102903,108813,150345,261065,148543]],[[185961,132392,132841,201037,151694,114622,126410,134246,188966,338994,173806],[164654,125901,140682,189800,142191,107639,115372,127261,180506,338562,159471],[157593,122743,119429,207693,145759,102130,120148,130096,194731,358234,172551]]]; // FICTÍCIO: [previsto, realizado, ano anterior] por semana
+const CART={"qAtual":[880249,635083,622304,865312,740500,560599,701571,633117,898382,1947788,789833],"vAtual":[55529940,36573220,37095276,43694137,34366359,24797167,46521268,20586924,57452690,88375379,40288144],"qAnt":[1210703,717388,777756,1478290,1023444,639396,903740,944207,1149064,2316326,1155581],"vAnt":[63797668,38325210,34166890,58418141,62240356,22930851,48595093,33204222,75699496,100419987,49092100]}; // FICTÍCIO
 const DIAS_UTEIS={2026:[2,5,4,5,5],2025:[3,5,5,5,5]};
 
 /* ---------- dados FICTÍCIOS (só para simular consultas que o relatório não tem) ---------- */
@@ -565,7 +553,7 @@ function clean(c){
     chips:Array.isArray(c.chips)?c.chips.slice(0,3).map(x=>[String(x?.[0]??x),t(x?.[1])]):[],ev};
 }
 /* ---------- estado individual (fica neste aparelho) ---------- */
-const KEY="mesa-poi-v4";
+const KEY="mesa-poi-v5";
 /* ---------- indicadores que uma decisão pode acompanhar ---------- */
 const IND=[
   {id:"ped-total",l:"Pedidos · total, % do previsto",v:w=>pct(tot(PED,w,1),tot(PED,w,0)),u:"%"},
@@ -584,8 +572,8 @@ const SEED={user:"Rodrigo",online:true,queue:[],scale:1,marked:{},edits:{},notes
   outs:[
     {id:"o1",k:"pergunta",t:"O pedido grande de Novo Hamburgo de 2025 se repete este ano?",who:"Maribel",done:false,from:"Aberta na semana de 12 a 18"},
     {id:"o2",k:"pendencia",t:"Separar bolsas de produção e de revenda no produto pronto",who:"Controladoria",done:false},
-    {id:"o3",k:"decisao",t:"Manter o ritmo de produção até a carteira de novembro fechar",who:"João",done:false,from:"Decidida na semana de 12 a 18",ind:"prod-total",base:{w:2,v:101}},
-    {id:"o4",k:"decisao",t:"Liberar os pedidos travados de Candelária FL10",who:"João",done:false,from:"Decidida na semana de 12 a 18",ind:"ped-FL10",base:{w:2,v:49}}]};
+    {id:"o3",k:"decisao",t:"Manter o ritmo de produção até a carteira de novembro fechar",who:"João",done:false,from:"Decidida na semana de 12 a 18",ind:"prod-total",base:{w:2}},
+    {id:"o4",k:"decisao",t:"Liberar os pedidos travados de Candelária FL10",who:"João",done:false,from:"Decidida na semana de 12 a 18",ind:"ped-FL10",base:{w:2}}]};
 let S; try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){S=null}
 S=S&&S.outs?Object.assign(structuredClone(SEED),S):structuredClone(SEED);
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -627,10 +615,10 @@ const PAPEIS={
   "Clóvis":{foco:"Devoluções, produto pronto e a conferência do caixa com o financeiro.",le:[],extra:"devol"},
   "Luiz":{foco:"Acompanhe a semana e fixe o que importa para a sua área.",le:[],extra:null},
   "Miran":{foco:"Acompanhe a semana e fixe o que importa para a sua área.",le:[],extra:null}};
-// GER5003 páginas 3, 5 e 6 (reais); caixa fictício
-const DEVOL={sem:["Sem. ant.","01–04","05–11","12–18","19–25"],saldoQ:[241840,301200,328934,294932,345500],saldoV:[10937301,14139040,16543853,14479493,16909254],entQ:[33914,63624,138261,102691,123272],saiQ:[51088,4264,110527,136693,72704]};
-const MP={consumo:[14532527,43195888,38212108,45557054],consumo25:[21653660,40327006,33673988,41932822],disp:253059005,disp25:239990392};
-const CART_MES=[["Set/26",481928,25192428],["Out/26",5169955,261208571],["Nov/26",8526161,450552795],["Dez/26",1083872,50705505],["Jan/27",184176,8776926]];
+// Estrutura das páginas 3, 5 e 6 do relatório; todos os valores são fictícios
+const DEVOL={"sem":["Sem. ant.","01–04","05–11","12–18","19–25"],"saldoQ":[131579,159716,173794,174595,197540],"saldoV":[6587697,8183540,10099554,8471472,10110467],"entQ":[19335,38217,86175,54996,76138],"saiQ":[28961,2449,58591,75158,40630]}; // FICTÍCIO
+const MP={"consumo":[8971933,27509350,24347502,31882784],"consumo25":[15894139,26054817,23575788,30399838],"disp":168687978,"disp25":162103361}; // FICTÍCIO
+const CART_MES=[["Set/26",283838,13994991],["Out/26",2778909,162670852],["Nov/26",4657132,295274933],["Dez/26",687211,27615040],["Jan/27",111907,4916365]]; // FICTÍCIO
 const meu=()=>{S.meu??={};return S.meu[S.user]??={pins:[],pauta:[],shared:false}};
 const sharedPautas=()=>live()?LIVE.pautas.filter(p=>Array.isArray(p.itens)&&p.itens.length)
   :Object.entries(S.meu||{}).filter(([,m])=>m.shared&&m.pauta?.length).map(([papel,m])=>({papel,by:papel,itens:m.pauta.map(i=>({t:i.t,done:!!i.done}))}));
@@ -667,12 +655,22 @@ function personalCards(){
     big:String(ab.length),bigU:"itens abertos",chips:[],ev:rows.length?{cap:["Abertos por responsável",""],rows}:null})}
   return out;
 }
-const PREP_LOCAL={
-  "Rodrigo":["Pedidos 22% abaixo de 2025 no mês com a produção no plano: quando ajustar o ritmo?","Dar dono para as perguntas que ficaram abertas","Pedir plano comercial específico para Teutônia e Novo Hamburgo"],
-  "Sr. Roberto":["Caixa subiu R$ 12,8 mi na semana: o que entra de recebimento em novembro?","Com a carteira 14% menor em valor, qual o efeito no caixa de dezembro?"],
-  "João":["Teutônia produz no plano, mas a carteira caiu 25%: manter o ritmo em novembro?","Consumo de matéria-prima 9% acima de 2025: é produção ou formação de estoque?","Lembrar que a semana 01–04 teve 2 dias úteis ao comparar com 2025"],
-  "Maribel":["Novo Hamburgo caiu 75% contra 2025: pedido grande do ano passado ou perda de cliente?","Dezembro tem só 1,1 mi pares em carteira: qual o plano comercial?","Candelária FL10 está em 81% do previsto: quando entram os pedidos a liberar?"],
-  "Clóvis":["Saldo de devoluções subiu 17% na semana: o que está travando as saídas?","Conferir o fluxo de caixa com o financeiro antes de terça"]};
+function filialRisco(){
+  const r=FIL.map((f,i)=>({i,l:f[1],prod:pct(PROD[W][1][i],PROD[W][0][i]),cart:dlt(CART.qAtual[i],CART.qAnt[i])})).filter(x=>x.prod>=95).sort((a,b)=>a.cart-b.cart);
+  return r[0]||{i:3,l:FIL[3][1],prod:pct(PROD[W][1][3],PROD[W][0][3]),cart:dlt(CART.qAtual[t],CART.qAnt[t])};
+}
+function prepLocal(papel){
+  const q=FIL.map((f,i)=>({l:f[1],d:dlt(PED[W][1][i],PED[W][2][i])})).sort((a,b)=>a.d-b.d);
+  const dm=dlt(mtd(PED,1),mtd(PED,2)),pm=pct(mtd(PROD,1),mtd(PROD,0)),fr=filialRisco();
+  const dev=DEVOL.saldoQ,n=dev.length-1,dez=CART_MES.find(m=>m[0]==="Dez/26");
+  const txt=d=>`${Math.abs(d)}% ${d<0?"abaixo":"acima"}`;
+  return({
+    "Rodrigo":[`Pedidos ${txt(dm)} de 2025 no mês, com a produção em ${pm}% do plano: quando ajustar o ritmo?`,"Dar dono para as perguntas que ficaram abertas",`Pedir plano comercial específico para ${q[0].l} e ${q[1].l}`],
+    "Sr. Roberto":[`Caixa subiu R$ ${nf(CAIXA.resumo.saldo_final-CAIXA.resumo.saldo_inicial,1)} mi na semana: o que entra de recebimento em novembro?`,`Com a carteira ${txt(dlt(sum(CART.vAtual),sum(CART.vAnt)))} em valor, qual o efeito no caixa de dezembro?`],
+    "João":[`${fr.l} produz no plano, mas a carteira está ${txt(fr.cart)} do ano passado: manter o ritmo em novembro?`,`Consumo de matéria-prima ${txt(dlt(MP.consumo[3],MP.consumo25[3]))} de 2025: é produção ou formação de estoque?`,"Lembrar que a semana 01–04 teve 2 dias úteis ao comparar com 2025"],
+    "Maribel":[`${q[0].l} está ${txt(q[0].d)} de 2025: pedido grande do ano passado ou perda de cliente?`,`Dezembro tem só ${nf(dez[1]/1e6,1)} mi pares em carteira: qual o plano comercial?`,`Candelária FL10 está em ${pct(PED[W][1][4],PED[W][0][4])}% do previsto: quando entram os pedidos a liberar?`],
+    "Clóvis":[`Saldo de devoluções ${txt(dlt(dev[n],dev[n-1]))} da semana anterior: o que está travando as saídas?`,"Conferir o fluxo de caixa com o financeiro antes de terça"]})[papel];
+}
 
 /* ---------- ações: vão para o aparelho ou para a mesa compartilhada ---------- */
 async function guard(fn){
@@ -1092,7 +1090,7 @@ Responda com um único objeto JSON: {"itens": ["...", "..."]}`,{modelTier:"quick
     }
   }catch(e){if(e?.code==="cancelled"){if(btn)btn.disabled=false;return}}
   const ja=new Set(meu().pauta.map(p=>p.t));
-  const lista=(itens&&itens.length?itens:(PREP_LOCAL[S.user]||["Quais cartões da semana afetam a sua área?"])).filter(t=>!ja.has(t));
+  const lista=(itens&&itens.length?itens:(prepLocal(S.user)||["Quais cartões da semana afetam a sua área?"])).filter(t=>!ja.has(t));
   lista.forEach(addPauta);syncPauta();
   renderOuts();
   setHint(lista.length?`${lista.length} sugest${lista.length>1?"ões":"ão"} na sua pauta.${itens?"":" (Calculadas a partir da edição da semana.)"}`:"Sua pauta já tem essas sugestões.");
@@ -1102,7 +1100,7 @@ Responda com um único objeto JSON: {"itens": ["...", "..."]}`,{modelTier:"quick
 /* ---------- novos insights ---------- */
 function localDiscoveries(){
   const pP2=tot(PED,2,0),pP3=tot(PED,3,0),pR2=tot(PED,2,1),pR3=tot(PED,3,1);
-  const t=3;
+  const t=filialRisco().i;
   const risco=FIL.map((f,i)=>({l:f[1],prod:pct(sum([0,1,2,3].map(w=>PROD[w][1][i])),sum([0,1,2,3].map(w=>PROD[w][0][i]))),cart:dlt(CART.qAtual[i],CART.qAnt[i])}))
     .filter(x=>x.prod>=95&&x.cart<=-15).sort((a,b)=>a.cart-b.cart);
   const tr=[{name:"consultar_pedidos",input:{semana:"19–25"},ok:true,resumo:"11 filiais, semana 19–25"},{name:"consultar_producao",input:{},ok:true,resumo:"11 filiais, 4 semanas"},{name:"consultar_carteira",input:{},ok:true,resumo:"todas as filiais"}];
@@ -1111,10 +1109,10 @@ function localDiscoveries(){
      sentence:`Os ${pct(pR3,pP3)}% do previsto em pedidos parecem melhores do que são: o previsto desta semana é ${Math.abs(dlt(pP3,pP2))}% menor que o da semana passada. Em reais, a semana ficou praticamente igual à anterior (R$ ${mi(pR3)} mi contra R$ ${mi(pR2)} mi).`,
      big:`${sg(dlt(pP3,pP2))}`,bigU:"no previsto de uma semana para outra",chips:[["Cuidado ao comparar % do previsto","warn"]],
      ev:{cap:["Pedidos, R$ mi","traço = previsto"],rows:[{l:"12–18",v:pR2/1e6,ref:pP2/1e6,t:"bad",txt:mi(pR2)},{l:"19–25",v:pR3/1e6,ref:pP3/1e6,t:"warn",txt:mi(pR3)}]}},
-    {kicker:"Novo insight · Teutônia",tone:"bad",
-     sentence:`Teutônia produz no plano (${pct(PROD[t][1][3],PROD[t][0][3])}% do previsto na semana), mas os pedidos caíram ${Math.abs(dlt(PED[t][1][3],PED[t][2][3]))}% contra 2025 e a carteira está ${Math.abs(dlt(CART.qAtual[3],CART.qAnt[3]))}% menor. Se nada mudar, é onde pode faltar pedido para a fábrica primeiro.`,
-     big:sg(dlt(CART.qAtual[3],CART.qAnt[3])),bigU:"carteira vs out/2025",chips:[["Produção no plano, venda caindo","bad"]],
-     ev:{cap:["Teutônia contra 2025",""],diverge:true,rows:[{l:"Produção",v:dlt(PROD[t][1][3],PROD[t][2][3]),t:toneD(dlt(PROD[t][1][3],PROD[t][2][3])),txt:sg(dlt(PROD[t][1][3],PROD[t][2][3]))},{l:"Pedidos",v:dlt(PED[t][1][3],PED[t][2][3]),t:"bad",txt:sg(dlt(PED[t][1][3],PED[t][2][3]))},{l:"Carteira",v:dlt(CART.qAtual[3],CART.qAnt[3]),t:"bad",txt:sg(dlt(CART.qAtual[3],CART.qAnt[3]))}]}},
+    {kicker:`Novo insight · ${FIL[t][1]}`,tone:"bad",
+     sentence:`${FIL[t][1]} produz no plano (${pct(PROD[3][1][t],PROD[3][0][t])}% do previsto na semana), mas os pedidos caíram ${Math.abs(dlt(PED[3][1][t],PED[3][2][t]))}% contra 2025 e a carteira está ${Math.abs(dlt(CART.qAtual[t],CART.qAnt[t]))}% menor. Se nada mudar, é onde pode faltar pedido para a fábrica primeiro.`,
+     big:sg(dlt(CART.qAtual[t],CART.qAnt[t])),bigU:"carteira vs out/2025",chips:[["Produção no plano, venda caindo","bad"]],
+     ev:{cap:[`${FIL[t][1]} contra 2025`,""],diverge:true,rows:[{l:"Produção",v:dlt(PROD[3][1][t],PROD[3][2][t]),t:toneD(dlt(PROD[3][1][t],PROD[3][2][t])),txt:sg(dlt(PROD[3][1][t],PROD[3][2][t]))},{l:"Pedidos",v:dlt(PED[3][1][t],PED[3][2][t]),t:"bad",txt:sg(dlt(PED[3][1][t],PED[3][2][t]))},{l:"Carteira",v:dlt(CART.qAtual[t],CART.qAnt[t]),t:"bad",txt:sg(dlt(CART.qAtual[t],CART.qAnt[t]))}]}},
     {kicker:"Novo insight · onde a carteira acaba primeiro",tone:"warn",
      sentence:`Em ${risco.length} filiais a fábrica segue a ${risco.length?"95% ou mais":""} do plano no mês, mas a carteira encolheu 15% ou mais: ${risco.map(r=>r.l).join(", ")}. Vale olhar a carteira de novembro dessas unidades antes de manter o ritmo.`,
      big:String(risco.length),bigU:"filiais em atenção",chips:[["Cruzamento produção × carteira","info"]],
