@@ -106,6 +106,18 @@ No protótipo, troque o papel no menu do topo para ver a página de cada um.
 - A IA escreve só o resumo e os destaques. Decisões e responsáveis vêm direto do que foi registrado, sem reescrita.
 - Na reunião ao vivo, a ata fica publicada para todos. O botão "Copiar texto" leva a ata para um e-mail. Na versão final, ela será enviada automaticamente.
 
+## Respostas ao briefing do Design (versão 7)
+
+As perguntas do briefing ([briefing-design.md](briefing-design.md)) viraram funcionalidades:
+
+- **Data de corte em cada cartão:** "Operação até dom" ou "Pessoas até qui".
+- **Selo de conferência:** "Conferido com a base", "Excel do RH", "Excel do Financeiro" ou "E-mail do Comercial", com a explicação no detalhe.
+- **Peça que chega por último:** o fluxo de caixa aparece como "Aguardando o Financeiro" até chegar, e todos são avisados.
+- **Núcleo completo:** faturamento (MI e ME), pessoas, ranking com volume e margem, e caixa resumido para todos; o Informativo do caixa é só da Presidência.
+- **Anotação "Só eu" ou "Mesa",** guardando o valor do número no momento em que foi escrita.
+- **Modo apresentação:** ao mostrar a tela, as anotações pessoais e a Minha mesa ficam ocultas.
+- **Mesa desta reunião:** a Controladoria define quem vai e onde senta (Filial 20: três lugares de um lado, dois do outro, Presidência na cabeceira).
+
 ## Limites do protótipo
 
 - Anotações e decisões ficam só no navegador de quem usa. Na versão real, elas são compartilhadas entre os diretores, com o que é privado separado do que é da mesa.

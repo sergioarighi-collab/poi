@@ -6,6 +6,7 @@ Iniciativa para repensar a reunião semanal do **POI (Planejamento Operacional I
 
 ## Documentação
 
+- [Briefing do Design: a mesa, as peças e as 17 perguntas](docs/briefing-design.md)
 - [Descoberta: requisitos, perguntas em aberto e hipóteses](docs/descoberta.md)
 - [Arquitetura: primeiras decisões](docs/arquitetura.md)
 - [Entrada de dados: planilhas, módulo admin e integrações](docs/entrada-de-dados.md)
