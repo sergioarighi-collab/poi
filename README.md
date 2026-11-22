@@ -6,6 +6,8 @@ Iniciativa para repensar a reunião semanal do **POI (Planejamento Operacional I
 
 ## Documentação
 
+- **[Guia rápido da Mesa POI](https://claude.ai/artifact/46izWKtwSTM2mr6RM4BTeX)**: o projeto explicado de forma simples e como usar cada funcionalidade.
+
 - [Briefing do Design: a mesa, as peças e as 17 perguntas](docs/briefing-design.md)
 - [Material de hoje: os relatórios e a estrutura de cada um](docs/material-de-hoje.md)
 - [Descoberta: requisitos, perguntas em aberto e hipóteses](docs/descoberta.md)
